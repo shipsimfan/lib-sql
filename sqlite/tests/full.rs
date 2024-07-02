@@ -9,5 +9,10 @@ fn full() {
         .execute("CREATE TABLE test(id INTEGER PRIMARY KEY, name VARCHAR(64) NOT NULL); INSERT INTO test (name) VALUES (\"Testing\");")
         .unwrap();
 
+    let statement = connection
+        .prepare("SELECT name FROM test WHERE id = ?")
+        .unwrap();
+    drop(statement);
+
     drop(connection);
 }

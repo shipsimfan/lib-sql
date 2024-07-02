@@ -7,5 +7,7 @@
 #![warn(rustdoc::broken_intra_doc_links)]
 
 mod connection;
+mod statement;
 
 pub use connection::Connection;
+pub use statement::Statement;

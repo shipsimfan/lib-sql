@@ -1,6 +1,7 @@
+use crate::SQLite3Statement;
 use sqlite3::{
-    sqlite3_close, sqlite3_exec, sqlite3_free, sqlite3_open_v2, try_sqlite3, SQLite3, SQLiteError,
-    SQLITE_OPEN_CREATE, SQLITE_OPEN_FULLMUTEX, SQLITE_OPEN_READWRITE,
+    sqlite3_close, sqlite3_exec, sqlite3_free, sqlite3_open_v2, sqlite3_prepare_v2, try_sqlite3,
+    SQLite3, SQLiteError, SQLITE_OPEN_CREATE, SQLITE_OPEN_FULLMUTEX, SQLITE_OPEN_READWRITE,
 };
 use std::{ffi::CStr, path::Path, ptr::null_mut};
 
@@ -31,7 +32,11 @@ impl SQLite3Connection {
 }
 
 impl sql::Connection for SQLite3Connection {
+    type Statement<'a> = SQLite3Statement<'a>;
+
     type ExecuteError = String;
+
+    type PrepareError = SQLiteError;
 
     fn execute(&self, sql: &str) -> Result<(), String> {
         let mut errmsg_ptr = null_mut();
@@ -56,6 +61,18 @@ impl sql::Connection for SQLite3Connection {
             .to_string();
         unsafe { sqlite3_free(errmsg_ptr.cast()) };
         Err(errmsg)
+    }
+
+    fn prepare<'a>(&'a self, sql: &str) -> Result<Self::Statement<'a>, Self::PrepareError> {
+        let mut handle = null_mut();
+        try_sqlite3!(sqlite3_prepare_v2(
+            self.handle,
+            sql.as_ptr().cast(),
+            sql.len() as _,
+            &mut handle,
+            null_mut()
+        ))
+        .map(|_| SQLite3Statement::new(handle, self))
     }
 }
 
