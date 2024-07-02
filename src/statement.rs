@@ -1,7 +1,14 @@
+use crate::Bind;
+
 /// A prepared SQL statement
-pub trait Statement<'a> {
+pub trait Statement<'a>: Sized {
     /// An error that can occur while binding a value
     type BindError;
+
+    /// Binds `val` to the parameter at index `idx`
+    fn bind<T: Bind>(&mut self, idx: usize, val: &'a T) -> Result<(), Self::BindError> {
+        val.bind(idx, self)
+    }
 
     /// Binds `val` to the parameter at index `idx`
     fn bind_u8(&mut self, idx: usize, val: u8) -> Result<(), Self::BindError> {

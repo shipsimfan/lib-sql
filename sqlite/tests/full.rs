@@ -16,7 +16,7 @@ fn full() {
         .prepare("SELECT name FROM test WHERE id = ?")
         .unwrap();
 
-    statement.bind_usize(1, 0).unwrap();
+    statement.bind(1, &0).unwrap();
 
     drop(statement);
 
