@@ -1,4 +1,7 @@
-use sqlite::{sql::Connection, SQLite3Connection};
+use sqlite::{
+    sql::{Connection, Statement},
+    SQLite3Connection,
+};
 
 /// Tests a variety of functions to make sure they work
 #[test]
@@ -9,9 +12,12 @@ fn full() {
         .execute("CREATE TABLE test(id INTEGER PRIMARY KEY, name VARCHAR(64) NOT NULL); INSERT INTO test (name) VALUES (\"Testing\");")
         .unwrap();
 
-    let statement = connection
+    let mut statement = connection
         .prepare("SELECT name FROM test WHERE id = ?")
         .unwrap();
+
+    statement.bind_usize(1, 0).unwrap();
+
     drop(statement);
 
     drop(connection);
