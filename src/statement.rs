@@ -5,6 +5,14 @@ pub trait Statement<'a>: Sized {
     /// An error that can occur while binding a value
     type BindError;
 
+    /// An error that can occur while getting a row
+    type GetRowError;
+
+    /// Execute the query and get the result rows
+    fn rows<T>(
+        self,
+    ) -> Result<impl Iterator<Item = Result<T, Self::GetRowError>>, Self::GetRowError>;
+
     /// Binds `val` to the parameter at index `idx`
     fn bind<T: Bind>(&mut self, idx: usize, val: &'a T) -> Result<(), Self::BindError> {
         val.bind(idx, self)

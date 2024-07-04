@@ -23,6 +23,14 @@ impl<'a> SQLite3Statement<'a> {
 impl<'a> sql::Statement<'a> for SQLite3Statement<'a> {
     type BindError = SQLiteError;
 
+    type GetRowError = SQLiteError;
+
+    fn rows<T>(
+        self,
+    ) -> Result<impl Iterator<Item = Result<T, Self::GetRowError>>, Self::GetRowError> {
+        todo!()
+    }
+
     fn bind_u64(&mut self, idx: usize, val: u64) -> Result<(), Self::BindError> {
         self.bind_i64(idx, val as _)
     }
