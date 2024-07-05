@@ -16,9 +16,10 @@ fn full() {
         .prepare("SELECT name FROM test WHERE id = ?")
         .unwrap();
 
-    statement.bind(1, &0).unwrap();
+    statement.bind(1, &1).unwrap();
 
-    drop(statement);
+    let row: String = statement.rows().unwrap().next().unwrap().unwrap();
+    assert_eq!(row, "Testing");
 
     drop(connection);
 }

@@ -1,4 +1,5 @@
-use crate::SQLite3Connection;
+use crate::{SQLite3Connection, SQLite3Rows};
+use sql::FromRow;
 use sqlite3::{
     sqlite3_bind_blob, sqlite3_bind_double, sqlite3_bind_int64, sqlite3_bind_null,
     sqlite3_bind_text, sqlite3_finalize, try_sqlite3, SQLite3Stmt, SQLiteError,
@@ -7,7 +8,8 @@ use sqlite3::{
 /// A prepared SQL statement for an [`SQLite3Connection`]
 pub struct SQLite3Statement<'a> {
     handle: *mut SQLite3Stmt,
-    _conn: &'a SQLite3Connection,
+    conn: &'a SQLite3Connection,
+    finalize: bool,
 }
 
 impl<'a> SQLite3Statement<'a> {
@@ -15,7 +17,8 @@ impl<'a> SQLite3Statement<'a> {
     pub(crate) fn new(handle: *mut SQLite3Stmt, conn: &'a SQLite3Connection) -> Self {
         SQLite3Statement {
             handle,
-            _conn: conn,
+            conn,
+            finalize: true,
         }
     }
 }
@@ -25,10 +28,12 @@ impl<'a> sql::Statement<'a> for SQLite3Statement<'a> {
 
     type GetRowError = SQLiteError;
 
-    fn rows<T>(
-        self,
+    fn rows<T: FromRow>(
+        mut self,
     ) -> Result<impl Iterator<Item = Result<T, Self::GetRowError>>, Self::GetRowError> {
-        todo!()
+        self.finalize = false;
+
+        Ok(SQLite3Rows::new(self.handle, self.conn))
     }
 
     fn bind_u64(&mut self, idx: usize, val: u64) -> Result<(), Self::BindError> {
@@ -72,6 +77,8 @@ impl<'a> sql::Statement<'a> for SQLite3Statement<'a> {
 
 impl<'a> Drop for SQLite3Statement<'a> {
     fn drop(&mut self) {
-        try_sqlite3!(sqlite3_finalize(self.handle)).unwrap();
+        if self.finalize {
+            try_sqlite3!(sqlite3_finalize(self.handle)).unwrap();
+        }
     }
 }

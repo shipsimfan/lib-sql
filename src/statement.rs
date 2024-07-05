@@ -1,4 +1,4 @@
-use crate::Bind;
+use crate::{Bind, FromRow};
 
 /// A prepared SQL statement
 pub trait Statement<'a>: Sized {
@@ -9,7 +9,7 @@ pub trait Statement<'a>: Sized {
     type GetRowError;
 
     /// Execute the query and get the result rows
-    fn rows<T>(
+    fn rows<T: FromRow>(
         self,
     ) -> Result<impl Iterator<Item = Result<T, Self::GetRowError>>, Self::GetRowError>;
 
