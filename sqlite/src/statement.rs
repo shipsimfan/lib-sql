@@ -82,3 +82,5 @@ impl<'a> Drop for SQLite3Statement<'a> {
         }
     }
 }
+
+unsafe impl<'a> Send for SQLite3Statement<'a> {}

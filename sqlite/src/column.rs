@@ -64,3 +64,5 @@ impl<'a> sql::Column<'a> for SQLite3Column<'a> {
         Ok(unsafe { sqlite3_column_double(self.handle, self.index as _) })
     }
 }
+
+unsafe impl<'a> Send for SQLite3Column<'a> {}

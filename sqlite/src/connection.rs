@@ -81,3 +81,6 @@ impl Drop for SQLite3Connection {
         try_sqlite3!(sqlite3_close(self.handle)).unwrap();
     }
 }
+
+unsafe impl Send for SQLite3Connection {}
+unsafe impl Sync for SQLite3Connection {}

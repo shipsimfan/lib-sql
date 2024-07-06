@@ -42,3 +42,5 @@ impl<'a, T: FromRow> Drop for SQLite3Rows<'a, T> {
         try_sqlite3!(sqlite3_finalize(self.handle)).unwrap();
     }
 }
+
+unsafe impl<'a, T: FromRow> Send for SQLite3Rows<'a, T> {}

@@ -28,3 +28,5 @@ impl<'a> sql::Row for SQLite3Row<'a> {
         T::from_column(SQLite3Column::new(self.handle, index, self))
     }
 }
+
+unsafe impl<'a> Send for SQLite3Row<'a> {}
