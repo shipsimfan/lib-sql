@@ -19,3 +19,4 @@ pub use rows::SQLite3Rows;
 pub use statement::SQLite3Statement;
 
 pub use sql;
+pub use sqlite3::SQLiteError;
