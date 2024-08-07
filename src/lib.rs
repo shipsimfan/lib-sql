@@ -9,15 +9,11 @@
 mod bind;
 mod column;
 mod connection;
-mod from_column;
-mod from_row;
 mod row;
 mod statement;
 
 pub use bind::Bind;
-pub use column::Column;
+pub use column::{Column, FromColumn};
 pub use connection::Connection;
-pub use from_column::FromColumn;
-pub use from_row::FromRow;
-pub use row::Row;
+pub use row::{FromRow, FromRowError, Row};
 pub use statement::Statement;

@@ -1,4 +1,4 @@
-use crate::{SQLite3Connection, SQLite3Row};
+use crate::{SQLite3Connection, SQLite3Row, SQLiteFromRowError};
 use sql::FromRow;
 use sqlite3::{
     sqlite3_finalize, sqlite3_step, try_sqlite3, SQLite3Stmt, SQLiteError, SQLITE_DONE, SQLITE_ROW,
@@ -24,13 +24,13 @@ impl<'a, T: FromRow> SQLite3Rows<'a, T> {
 }
 
 impl<'a, T: FromRow> Iterator for SQLite3Rows<'a, T> {
-    type Item = Result<T, SQLiteError>;
+    type Item = Result<T, SQLiteFromRowError>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match unsafe { sqlite3_step(self.handle) } {
             SQLITE_DONE => return None,
             SQLITE_ROW => {}
-            error => return Some(Err(SQLiteError::new(error))),
+            error => return Some(Err(SQLiteError::new(error).into())),
         }
 
         Some(T::from_row(SQLite3Row::new(self.handle, self)))

@@ -3,12 +3,6 @@
 version = 3
 
 [[package]]
-name = "cc"
-version = "1.0.103"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2755ff20a1d93490d26ba33a6f092a38a508398a5320df5d4b3014fcccce9410"
-
-[[package]]
 name = "sql"
 version = "0.1.0"
 
@@ -23,7 +17,4 @@ dependencies = [
 [[package]]
 name = "sqlite3"
 version = "0.1.0"
-source = "git+https://github.com/shipsimfan/lib-sqlite3#7b5c75b6f98dda1ea2cbfd7699b095af6d48380f"
-dependencies = [
- "cc",
-]
+source = "git+https://github.com/shipsimfan/lib-sqlite3#cbdc992bd37504f7b07ea1f41296636c2d247ca1"

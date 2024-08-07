@@ -1,7 +1,7 @@
-use crate::SQLite3Row;
+use crate::SQLiteFromRowError;
 use sqlite3::{
     sqlite3_column_blob, sqlite3_column_bytes, sqlite3_column_double, sqlite3_column_int64,
-    sqlite3_column_text, SQLite3Stmt, SQLiteError,
+    sqlite3_column_text, SQLite3Stmt,
 };
 use std::{marker::PhantomData, ptr::null};
 
@@ -14,11 +14,7 @@ pub struct SQLite3Column<'a> {
 
 impl<'a> SQLite3Column<'a> {
     /// Creates a new [`SQLite3Column`]
-    pub(crate) fn new(
-        handle: *mut SQLite3Stmt,
-        index: usize,
-        #[allow(unused_variables)] parent: &'a mut SQLite3Row,
-    ) -> Self {
+    pub(crate) fn new(handle: *mut SQLite3Stmt, index: usize) -> Self {
         SQLite3Column {
             handle,
             index,
@@ -28,7 +24,11 @@ impl<'a> SQLite3Column<'a> {
 }
 
 impl<'a> sql::Column<'a> for SQLite3Column<'a> {
-    type Error = SQLiteError;
+    type Error = SQLiteFromRowError;
+
+    fn name(&self) -> Result<String, Self::Error> {
+        Ok(String::new())
+    }
 
     fn into_blob(self) -> Result<&'a [u8], Self::Error> {
         let ptr = unsafe { sqlite3_column_blob(self.handle, self.index as _) };

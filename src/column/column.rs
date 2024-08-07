@@ -3,6 +3,9 @@ pub trait Column<'a>: Sized {
     /// An error that occur while trying to convert this column to a specific type
     type Error;
 
+    /// Gets the name of this column
+    fn name(&self) -> Result<String, Self::Error>;
+
     /// Converts this column into a blob
     fn into_blob(self) -> Result<&'a [u8], Self::Error>;
 
