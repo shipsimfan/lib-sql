@@ -6,10 +6,10 @@ pub trait Connection: 'static {
     type Statement<'a>: Statement<'a>;
 
     /// An error that can occur while executing some SQL
-    type ExecuteError;
+    type ExecuteError: std::error::Error;
 
     /// An error that can occur while preparing an SQL statement
-    type PrepareError;
+    type PrepareError: std::error::Error;
 
     /// Runs an block of SQL code
     fn execute(&self, sql: &str) -> Result<(), Self::ExecuteError>;

@@ -1,4 +1,4 @@
-use crate::{SQLite3Column, SQLite3Rows, SQLiteFromRowError};
+use crate::{SQLite3Column, SQLite3FromRowError, SQLite3Rows};
 use sql::FromRow;
 use sqlite3::{sqlite3_column_count, SQLite3Stmt};
 use std::marker::PhantomData;
@@ -29,13 +29,13 @@ impl<'a> SQLite3Row<'a> {
 }
 
 impl<'a> sql::Row<'a> for SQLite3Row<'a> {
-    type Error = SQLiteFromRowError;
+    type Error = SQLite3FromRowError;
 
     type Column = SQLite3Column<'a>;
 }
 
 impl<'a> Iterator for SQLite3Row<'a> {
-    type Item = Result<SQLite3Column<'a>, SQLiteFromRowError>;
+    type Item = Result<SQLite3Column<'a>, SQLite3FromRowError>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.total == self.current {

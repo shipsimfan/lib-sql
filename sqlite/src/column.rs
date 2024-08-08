@@ -1,4 +1,4 @@
-use crate::SQLiteFromRowError;
+use crate::SQLite3FromRowError;
 use sqlite3::{
     sqlite3_column_blob, sqlite3_column_bytes, sqlite3_column_double, sqlite3_column_int64,
     sqlite3_column_text, SQLite3Stmt,
@@ -24,7 +24,7 @@ impl<'a> SQLite3Column<'a> {
 }
 
 impl<'a> sql::Column<'a> for SQLite3Column<'a> {
-    type Error = SQLiteFromRowError;
+    type Error = SQLite3FromRowError;
 
     fn name(&self) -> Result<String, Self::Error> {
         Ok(String::new())

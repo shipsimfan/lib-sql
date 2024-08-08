@@ -1,7 +1,7 @@
 /// A column of a row returned from an SQL query
 pub trait Column<'a>: Sized {
     /// An error that occur while trying to convert this column to a specific type
-    type Error;
+    type Error: std::error::Error;
 
     /// Gets the name of this column
     fn name(&self) -> Result<String, Self::Error>;

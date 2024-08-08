@@ -1,4 +1,4 @@
-use crate::{SQLite3Connection, SQLite3Rows, SQLiteFromRowError};
+use crate::{SQLite3Connection, SQLite3Rows, SQLite3FromRowError};
 use sql::FromRow;
 use sqlite3::{
     sqlite3_bind_blob, sqlite3_bind_double, sqlite3_bind_int64, sqlite3_bind_null,
@@ -26,7 +26,7 @@ impl<'a> SQLite3Statement<'a> {
 impl<'a> sql::Statement<'a> for SQLite3Statement<'a> {
     type BindError = SQLiteError;
 
-    type GetRowError = SQLiteFromRowError;
+    type GetRowError = SQLite3FromRowError;
 
     fn rows<T: FromRow>(
         mut self,

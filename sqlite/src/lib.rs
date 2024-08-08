@@ -8,14 +8,16 @@
 
 mod column;
 mod connection;
-mod error;
+mod execute_error;
+mod from_row_error;
 mod row;
 mod rows;
 mod statement;
 
 pub use column::SQLite3Column;
 pub use connection::SQLite3Connection;
-pub use error::SQLiteFromRowError;
+pub use execute_error::SQLite3ExecuteError;
+pub use from_row_error::SQLite3FromRowError;
 pub use row::SQLite3Row;
 pub use rows::SQLite3Rows;
 pub use statement::SQLite3Statement;

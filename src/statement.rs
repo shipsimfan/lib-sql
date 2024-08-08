@@ -3,10 +3,10 @@ use crate::{Bind, FromRow};
 /// A prepared SQL statement
 pub trait Statement<'a>: Sized {
     /// An error that can occur while binding a value
-    type BindError;
+    type BindError: std::error::Error;
 
     /// An error that can occur while getting a row
-    type GetRowError;
+    type GetRowError: std::error::Error;
 
     /// Execute the query and get the result rows
     fn rows<T: FromRow>(
