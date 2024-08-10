@@ -42,7 +42,9 @@ impl<'a> Iterator for SQLite3Row<'a> {
             return None;
         }
 
-        Some(Ok(SQLite3Column::new(self.handle, self.current)))
+        let column = SQLite3Column::new(self.handle, self.current);
+        self.current += 1;
+        Some(Ok(column))
     }
 }
 
