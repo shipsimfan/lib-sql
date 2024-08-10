@@ -1,9 +1,9 @@
 use crate::SQLite3FromRowError;
 use sqlite3::{
     sqlite3_column_blob, sqlite3_column_bytes, sqlite3_column_double, sqlite3_column_int64,
-    sqlite3_column_text, SQLite3Stmt,
+    sqlite3_column_name, sqlite3_column_text, SQLite3Stmt,
 };
-use std::{marker::PhantomData, ptr::null};
+use std::{ffi::CStr, marker::PhantomData, ptr::null};
 
 /// A column of a result returned by an query to an SQLite3 database
 pub struct SQLite3Column<'a> {
@@ -27,7 +27,12 @@ impl<'a> sql::Column<'a> for SQLite3Column<'a> {
     type Error = SQLite3FromRowError;
 
     fn name(&self) -> Result<String, Self::Error> {
-        Ok(String::new())
+        let ptr = unsafe { sqlite3_column_name(self.handle, self.index as _) };
+        if ptr == null() {
+            return Ok(String::new());
+        }
+
+        Ok(unsafe { CStr::from_ptr(ptr) }.to_string_lossy().to_string())
     }
 
     fn into_blob(self) -> Result<&'a [u8], Self::Error> {
