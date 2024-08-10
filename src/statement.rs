@@ -14,9 +14,7 @@ pub trait Statement<'a>: Sized {
     ) -> Result<impl Iterator<Item = Result<T, Self::GetRowError>>, Self::GetRowError>;
 
     /// Executes the query
-    fn execute(self) -> Result<(), Self::GetRowError> {
-        self.rows::<usize>().map(|_| ())
-    }
+    fn execute(self) -> Result<(), Self::GetRowError>;
 
     /// Binds `val` to the parameter at index `idx`
     fn bind<T: Bind>(&mut self, idx: usize, val: &'a T) -> Result<(), Self::BindError> {

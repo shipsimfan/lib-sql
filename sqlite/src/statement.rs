@@ -2,7 +2,7 @@ use crate::{SQLite3Connection, SQLite3FromRowError, SQLite3Rows};
 use sql::FromRow;
 use sqlite3::{
     sqlite3_bind_blob, sqlite3_bind_double, sqlite3_bind_int64, sqlite3_bind_null,
-    sqlite3_bind_text, sqlite3_finalize, try_sqlite3, SQLite3Stmt, SQLiteError,
+    sqlite3_bind_text, sqlite3_finalize, sqlite3_step, try_sqlite3, SQLite3Stmt, SQLiteError,
 };
 
 /// A prepared SQL statement for an [`SQLite3Connection`]
@@ -34,6 +34,12 @@ impl<'a> sql::Statement<'a> for SQLite3Statement<'a> {
         self.finalize = false;
 
         Ok(SQLite3Rows::new(self.handle, self.conn))
+    }
+
+    fn execute(self) -> Result<(), Self::GetRowError> {
+        try_sqlite3!(sqlite3_step(self.handle))
+            .map_err(|error| SQLite3FromRowError::Database(error))
+            .map(|_| ())
     }
 
     fn bind_u64(&mut self, idx: usize, val: u64) -> Result<(), Self::BindError> {
