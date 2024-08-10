@@ -39,6 +39,8 @@ impl sql::Connection for SQLite3Connection {
     type PrepareError = SQLiteError;
 
     fn execute(&self, sql: &str) -> Result<(), SQLite3ExecuteError> {
+        let sql = format!("{}\0", sql);
+
         let mut errmsg_ptr = null_mut();
         let result = try_sqlite3!(sqlite3_exec(
             self.handle,
@@ -64,6 +66,8 @@ impl sql::Connection for SQLite3Connection {
     }
 
     fn prepare<'a>(&'a self, sql: &str) -> Result<Self::Statement<'a>, Self::PrepareError> {
+        let sql = format!("{}\0", sql);
+
         let mut handle = null_mut();
         try_sqlite3!(sqlite3_prepare_v2(
             self.handle,

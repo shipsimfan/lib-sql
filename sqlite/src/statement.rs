@@ -1,4 +1,4 @@
-use crate::{SQLite3Connection, SQLite3Rows, SQLite3FromRowError};
+use crate::{SQLite3Connection, SQLite3FromRowError, SQLite3Rows};
 use sql::FromRow;
 use sqlite3::{
     sqlite3_bind_blob, sqlite3_bind_double, sqlite3_bind_int64, sqlite3_bind_null,
