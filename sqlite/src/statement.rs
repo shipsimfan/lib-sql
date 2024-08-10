@@ -3,6 +3,7 @@ use sql::FromRow;
 use sqlite3::{
     sqlite3_bind_blob, sqlite3_bind_double, sqlite3_bind_int64, sqlite3_bind_null,
     sqlite3_bind_text, sqlite3_finalize, sqlite3_step, try_sqlite3, SQLite3Stmt, SQLiteError,
+    SQLITE_DONE, SQLITE_OK, SQLITE_ROW,
 };
 
 /// A prepared SQL statement for an [`SQLite3Connection`]
@@ -37,9 +38,10 @@ impl<'a> sql::Statement<'a> for SQLite3Statement<'a> {
     }
 
     fn execute(self) -> Result<(), Self::GetRowError> {
-        try_sqlite3!(sqlite3_step(self.handle))
-            .map_err(|error| SQLite3FromRowError::Database(error))
-            .map(|_| ())
+        match unsafe { sqlite3_step(self.handle) } {
+            SQLITE_DONE | SQLITE_ROW | SQLITE_OK => Ok(()),
+            error => Err(SQLite3FromRowError::Database(SQLiteError::new(error))),
+        }
     }
 
     fn bind_u64(&mut self, idx: usize, val: u64) -> Result<(), Self::BindError> {
