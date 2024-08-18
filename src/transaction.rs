@@ -19,6 +19,9 @@ pub trait Transaction<'a> {
     /// Prepares an SQL statement for binding and running
     fn prepare<'b>(&'b self, sql: &str) -> Result<Self::Statement<'b>, Self::PrepareError>;
 
+    /// Gets the last inserted id, if there is one
+    fn last_insert_id(&self) -> Option<usize>;
+
     /// Commits the effects of this transaction
     fn commit(self) -> Result<(), Self::ExecuteError>;
 }

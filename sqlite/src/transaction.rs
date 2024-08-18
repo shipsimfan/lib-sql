@@ -1,6 +1,6 @@
 use crate::{connection, SQLite3ExecuteError, SQLite3Statement};
 use sql::Transaction;
-use sqlite3::{SQLite3, SQLiteError};
+use sqlite3::{sqlite3_last_insert_rowid, SQLite3, SQLiteError};
 use std::sync::MutexGuard;
 
 /// A set of sql statements which will be rolled back automatically if not comitted
@@ -34,6 +34,15 @@ impl<'a> Transaction<'a> for SQLite3Transaction<'a> {
 
     fn prepare<'b>(&'b self, sql: &str) -> Result<Self::Statement<'b>, Self::PrepareError> {
         connection::prepare(*self.handle, None, sql)
+    }
+
+    fn last_insert_id(&self) -> Option<usize> {
+        let id = unsafe { sqlite3_last_insert_rowid(*self.handle) };
+        if id <= 0 {
+            None
+        } else {
+            Some(id as _)
+        }
     }
 
     fn commit(mut self) -> Result<(), Self::ExecuteError> {
