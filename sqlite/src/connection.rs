@@ -1,13 +1,18 @@
 use crate::{SQLite3ExecuteError, SQLite3Statement};
 use sqlite3::{
     sqlite3_close, sqlite3_exec, sqlite3_free, sqlite3_open_v2, sqlite3_prepare_v2, try_sqlite3,
-    SQLite3, SQLiteError, SQLITE_OPEN_CREATE, SQLITE_OPEN_FULLMUTEX, SQLITE_OPEN_READWRITE,
+    SQLite3, SQLiteError, SQLITE_OPEN_CREATE, SQLITE_OPEN_NOMUTEX, SQLITE_OPEN_READWRITE,
 };
-use std::{ffi::CStr, path::Path, ptr::null_mut};
+use std::{
+    ffi::CStr,
+    path::Path,
+    ptr::null_mut,
+    sync::{Mutex, MutexGuard},
+};
 
 /// A connection an SQLite3 database
 pub struct SQLite3Connection {
-    handle: *mut SQLite3,
+    handle: Mutex<*mut SQLite3>,
 }
 
 impl SQLite3Connection {
@@ -20,14 +25,21 @@ impl SQLite3Connection {
         try_sqlite3!(sqlite3_open_v2(
             path.as_ptr().cast(),
             &mut handle,
-            SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX,
+            SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_NOMUTEX,
             null_mut()
         ))
-        .map(|_| SQLite3Connection { handle })
+        .map(|_| SQLite3Connection {
+            handle: Mutex::new(handle),
+        })
         .map_err(|error| {
             try_sqlite3!(sqlite3_close(handle)).unwrap();
             error
         })
+    }
+
+    /// Locks the underlying connection
+    pub(crate) fn lock(&self) -> MutexGuard<*mut SQLite3> {
+        self.handle.lock().unwrap()
     }
 }
 
@@ -42,8 +54,9 @@ impl sql::Connection for SQLite3Connection {
         let sql = format!("{}\0", sql);
 
         let mut errmsg_ptr = null_mut();
+        let handle = self.lock();
         let result = try_sqlite3!(sqlite3_exec(
-            self.handle,
+            *handle,
             sql.as_ptr().cast(),
             None,
             null_mut(),
@@ -68,21 +81,23 @@ impl sql::Connection for SQLite3Connection {
     fn prepare<'a>(&'a self, sql: &str) -> Result<Self::Statement<'a>, Self::PrepareError> {
         let sql = format!("{}\0", sql);
 
-        let mut handle = null_mut();
+        let mut stmt_handle = null_mut();
+        let conn_handle = self.lock();
         try_sqlite3!(sqlite3_prepare_v2(
-            self.handle,
+            *conn_handle,
             sql.as_ptr().cast(),
             sql.len() as _,
-            &mut handle,
+            &mut stmt_handle,
             null_mut()
         ))
-        .map(|_| SQLite3Statement::new(handle, self))
+        .map(|_| SQLite3Statement::new(stmt_handle, self))
     }
 }
 
 impl Drop for SQLite3Connection {
     fn drop(&mut self) {
-        try_sqlite3!(sqlite3_close(self.handle)).unwrap();
+        let handle = self.handle.lock().unwrap();
+        try_sqlite3!(sqlite3_close(*handle)).unwrap();
     }
 }
 

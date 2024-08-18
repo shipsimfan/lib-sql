@@ -38,10 +38,13 @@ impl<'a> sql::Statement<'a> for SQLite3Statement<'a> {
     }
 
     fn execute(self) -> Result<(), Self::GetRowError> {
-        match unsafe { sqlite3_step(self.handle) } {
+        let lock = self.conn.lock();
+        let result = match unsafe { sqlite3_step(self.handle) } {
             SQLITE_DONE | SQLITE_ROW | SQLITE_OK => Ok(()),
             error => Err(SQLite3FromRowError::Database(SQLiteError::new(error))),
-        }
+        };
+        drop(lock);
+        result
     }
 
     fn bind_u64(&mut self, idx: usize, val: u64) -> Result<(), Self::BindError> {
