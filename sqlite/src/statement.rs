@@ -9,13 +9,13 @@ use sqlite3::{
 /// A prepared SQL statement for an [`SQLite3Connection`]
 pub struct SQLite3Statement<'a> {
     handle: *mut SQLite3Stmt,
-    conn: &'a SQLite3Connection,
+    conn: Option<&'a SQLite3Connection>,
     finalize: bool,
 }
 
 impl<'a> SQLite3Statement<'a> {
     /// Creates a new [`SQLite3Statement`]
-    pub(crate) fn new(handle: *mut SQLite3Stmt, conn: &'a SQLite3Connection) -> Self {
+    pub(crate) fn new(handle: *mut SQLite3Stmt, conn: Option<&'a SQLite3Connection>) -> Self {
         SQLite3Statement {
             handle,
             conn,
@@ -38,7 +38,7 @@ impl<'a> sql::Statement<'a> for SQLite3Statement<'a> {
     }
 
     fn execute(self) -> Result<(), Self::GetRowError> {
-        let lock = self.conn.lock();
+        let lock = self.conn.map(|conn| conn.lock());
         let result = match unsafe { sqlite3_step(self.handle) } {
             SQLITE_DONE | SQLITE_ROW | SQLITE_OK => Ok(()),
             error => Err(SQLite3FromRowError::Database(SQLiteError::new(error))),

@@ -11,9 +11,11 @@ mod column;
 mod connection;
 mod row;
 mod statement;
+mod transaction;
 
 pub use bind::Bind;
 pub use column::{Column, FromColumn};
 pub use connection::Connection;
 pub use row::{FromRow, FromRowError, Row};
 pub use statement::Statement;
+pub use transaction::Transaction;

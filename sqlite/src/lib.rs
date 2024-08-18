@@ -13,6 +13,7 @@ mod from_row_error;
 mod row;
 mod rows;
 mod statement;
+mod transaction;
 
 pub use column::SQLite3Column;
 pub use connection::SQLite3Connection;
@@ -21,6 +22,7 @@ pub use from_row_error::SQLite3FromRowError;
 pub use row::SQLite3Row;
 pub use rows::SQLite3Rows;
 pub use statement::SQLite3Statement;
+pub use transaction::SQLite3Transaction;
 
 pub use sql;
 pub use sqlite3::SQLiteError;

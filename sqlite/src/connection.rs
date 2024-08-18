@@ -1,4 +1,4 @@
-use crate::{SQLite3ExecuteError, SQLite3Statement};
+use crate::{SQLite3ExecuteError, SQLite3Statement, SQLite3Transaction};
 use sqlite3::{
     sqlite3_close, sqlite3_exec, sqlite3_free, sqlite3_open_v2, sqlite3_prepare_v2, try_sqlite3,
     SQLite3, SQLiteError, SQLITE_OPEN_CREATE, SQLITE_OPEN_NOMUTEX, SQLITE_OPEN_READWRITE,
@@ -13,6 +13,53 @@ use std::{
 /// A connection an SQLite3 database
 pub struct SQLite3Connection {
     handle: Mutex<*mut SQLite3>,
+}
+
+/// Executes `sql` on `handle`, assuming `handle` is locked
+pub(crate) fn execute(handle: *mut SQLite3, sql: &str) -> Result<(), SQLite3ExecuteError> {
+    let sql = format!("{}\0", sql);
+
+    let mut errmsg_ptr = null_mut();
+    let result = try_sqlite3!(sqlite3_exec(
+        handle,
+        sql.as_ptr().cast(),
+        None,
+        null_mut(),
+        &mut errmsg_ptr
+    ));
+
+    if result.is_ok() {
+        return Ok(());
+    }
+
+    if errmsg_ptr == null_mut() {
+        return Err(SQLite3ExecuteError::new(result.unwrap_err().to_string()));
+    }
+
+    let errmsg = unsafe { CStr::from_ptr(errmsg_ptr) }
+        .to_string_lossy()
+        .to_string();
+    unsafe { sqlite3_free(errmsg_ptr.cast()) };
+    Err(SQLite3ExecuteError::new(errmsg))
+}
+
+/// Prepares an [`SQLite3Statement`] using `sql` on `handle`, assuming `handle` is locked
+pub(crate) fn prepare<'a>(
+    handle: *mut SQLite3,
+    conn: Option<&'a SQLite3Connection>,
+    sql: &str,
+) -> Result<SQLite3Statement<'a>, SQLiteError> {
+    let sql = format!("{}\0", sql);
+
+    let mut stmt_handle = null_mut();
+    try_sqlite3!(sqlite3_prepare_v2(
+        handle,
+        sql.as_ptr().cast(),
+        sql.len() as _,
+        &mut stmt_handle,
+        null_mut()
+    ))
+    .map(|_| SQLite3Statement::new(stmt_handle, conn))
 }
 
 impl SQLite3Connection {
@@ -46,36 +93,15 @@ impl SQLite3Connection {
 impl sql::Connection for SQLite3Connection {
     type Statement<'a> = SQLite3Statement<'a>;
 
+    type Transaction<'a> = SQLite3Transaction<'a>;
+
     type ExecuteError = SQLite3ExecuteError;
 
     type PrepareError = SQLiteError;
 
     fn execute(&self, sql: &str) -> Result<(), SQLite3ExecuteError> {
-        let sql = format!("{}\0", sql);
-
-        let mut errmsg_ptr = null_mut();
-        let handle = self.lock();
-        let result = try_sqlite3!(sqlite3_exec(
-            *handle,
-            sql.as_ptr().cast(),
-            None,
-            null_mut(),
-            &mut errmsg_ptr
-        ));
-
-        if result.is_ok() {
-            return Ok(());
-        }
-
-        if errmsg_ptr == null_mut() {
-            return Err(SQLite3ExecuteError::new(result.unwrap_err().to_string()));
-        }
-
-        let errmsg = unsafe { CStr::from_ptr(errmsg_ptr) }
-            .to_string_lossy()
-            .to_string();
-        unsafe { sqlite3_free(errmsg_ptr.cast()) };
-        Err(SQLite3ExecuteError::new(errmsg))
+        let lock = self.handle.lock().unwrap();
+        execute(*lock, sql)
     }
 
     fn prepare<'a>(&'a self, sql: &str) -> Result<Self::Statement<'a>, Self::PrepareError> {
@@ -90,7 +116,11 @@ impl sql::Connection for SQLite3Connection {
             &mut stmt_handle,
             null_mut()
         ))
-        .map(|_| SQLite3Statement::new(stmt_handle, self))
+        .map(|_| SQLite3Statement::new(stmt_handle, Some(self)))
+    }
+
+    fn begin_trasaction<'a>(&'a self) -> Result<Self::Transaction<'a>, Self::ExecuteError> {
+        SQLite3Transaction::new(self.lock())
     }
 }
 

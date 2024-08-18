@@ -8,13 +8,13 @@ use std::marker::PhantomData;
 /// An iterator over a set of rows returned as the result of a query to an SQLite3 database
 pub struct SQLite3Rows<'a, T: FromRow> {
     handle: *mut SQLite3Stmt,
-    conn: &'a SQLite3Connection,
+    conn: Option<&'a SQLite3Connection>,
     _output: PhantomData<T>,
 }
 
 impl<'a, T: FromRow> SQLite3Rows<'a, T> {
     /// Creates a new [`SQLite3Rows`] iterator
-    pub(crate) fn new(handle: *mut SQLite3Stmt, conn: &'a SQLite3Connection) -> Self {
+    pub(crate) fn new(handle: *mut SQLite3Stmt, conn: Option<&'a SQLite3Connection>) -> Self {
         SQLite3Rows {
             handle,
             conn,
@@ -27,7 +27,7 @@ impl<'a, T: FromRow> Iterator for SQLite3Rows<'a, T> {
     type Item = Result<T, SQLite3FromRowError>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let lock = self.conn.lock();
+        let lock = self.conn.map(|conn| conn.lock());
         match unsafe { sqlite3_step(self.handle) } {
             SQLITE_DONE => return None,
             SQLITE_ROW => {}
