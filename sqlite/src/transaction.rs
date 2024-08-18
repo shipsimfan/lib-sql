@@ -45,6 +45,8 @@ impl<'a> Transaction<'a> for SQLite3Transaction<'a> {
 
 impl<'a> Drop for SQLite3Transaction<'a> {
     fn drop(&mut self) {
-        connection::execute(*self.handle, "ROLLBACK;").unwrap();
+        if !self.comitted {
+            connection::execute(*self.handle, "ROLLBACK;").unwrap();
+        }
     }
 }
