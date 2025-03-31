@@ -1,5 +1,5 @@
 /// A column of a row returned from an SQL query
-pub trait Column<'a>: Sized {
+pub trait Column<'column>: 'column + Sized {
     /// An error that occur while trying to convert this column to a specific type
     type Error: std::error::Error;
 
@@ -7,10 +7,10 @@ pub trait Column<'a>: Sized {
     fn name(&self) -> Result<String, Self::Error>;
 
     /// Converts this column into a blob
-    fn into_blob(self) -> Result<&'a [u8], Self::Error>;
+    fn into_blob(self) -> Result<&'column [u8], Self::Error>;
 
     /// Converts this column into a string
-    fn into_str(self) -> Result<&'a str, Self::Error>;
+    fn into_str(self) -> Result<&'column str, Self::Error>;
 
     /// Converts this column into a [`u8`]
     fn into_u8(self) -> Result<u8, Self::Error> {

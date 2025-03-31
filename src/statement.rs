@@ -1,7 +1,7 @@
 use crate::{Bind, FromRow};
 
 /// A prepared SQL statement
-pub trait Statement<'a>: Sized {
+pub trait Statement<'statement>: Sized {
     /// An error that can occur while binding a value
     type BindError: std::error::Error;
 
@@ -17,7 +17,7 @@ pub trait Statement<'a>: Sized {
     fn execute(self) -> Result<(), Self::GetRowError>;
 
     /// Binds `val` to the parameter at index `idx`
-    fn bind<T: Bind>(&mut self, idx: usize, val: &'a T) -> Result<(), Self::BindError> {
+    fn bind<T: Bind>(&mut self, idx: usize, val: &'statement T) -> Result<(), Self::BindError> {
         val.bind(idx, self)
     }
 
@@ -76,10 +76,10 @@ pub trait Statement<'a>: Sized {
     fn bind_f64(&mut self, idx: usize, val: f64) -> Result<(), Self::BindError>;
 
     /// Binds `s` to the parameter at index `idx`
-    fn bind_str(&mut self, idx: usize, s: &'a str) -> Result<(), Self::BindError>;
+    fn bind_str(&mut self, idx: usize, s: &'statement str) -> Result<(), Self::BindError>;
 
     /// Binds `b` to the parameter at index `idx`
-    fn bind_blob(&mut self, idx: usize, b: &'a [u8]) -> Result<(), Self::BindError>;
+    fn bind_blob(&mut self, idx: usize, b: &'statement [u8]) -> Result<(), Self::BindError>;
 
     /// Binds NULL to the parameter at index `idx`
     fn bind_null(&mut self, idx: usize) -> Result<(), Self::BindError>;

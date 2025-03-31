@@ -2,8 +2,8 @@ use crate::{Bind, Statement};
 use std::marker::PhantomData;
 
 impl Bind for () {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {
@@ -12,8 +12,8 @@ impl Bind for () {
 }
 
 impl<T> Bind for PhantomData<T> {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {

@@ -1,8 +1,8 @@
 use crate::{Bind, Statement};
 
 impl Bind for [u8] {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {
@@ -11,8 +11,8 @@ impl Bind for [u8] {
 }
 
 impl Bind for Vec<u8> {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {
@@ -21,8 +21,8 @@ impl Bind for Vec<u8> {
 }
 
 impl Bind for Box<[u8]> {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {

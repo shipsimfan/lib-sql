@@ -8,8 +8,8 @@ mod string;
 /// A data structure which can be bound to as an SQL statement parameter
 pub trait Bind {
     /// Bind this structure to `statement` at `idx`
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError>;

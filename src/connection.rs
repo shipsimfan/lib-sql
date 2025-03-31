@@ -1,16 +1,12 @@
 use crate::{Statement, Transaction};
 
 /// Represents a connection to a database
-pub trait Connection {
+pub trait Connection: 'static {
     /// A prepared SQL statement
-    type Statement<'a>: Statement<'a>
-    where
-        Self: 'a;
+    type Statement<'statement>: Statement<'statement>;
 
     /// A transaction which rolls back automatically if not comitted
-    type Transaction<'a>: Transaction<'a>
-    where
-        Self: 'a;
+    type Transaction<'transaction>: Transaction<'transaction>;
 
     /// An error that can occur while executing some SQL
     type ExecuteError: std::error::Error;
@@ -19,11 +15,16 @@ pub trait Connection {
     type PrepareError: std::error::Error;
 
     /// Runs an block of SQL code
-    fn execute(&self, sql: &str) -> Result<(), Self::ExecuteError>;
+    fn execute(&mut self, sql: &str) -> Result<(), Self::ExecuteError>;
 
     /// Prepares an SQL statement for binding and running
-    fn prepare<'a>(&'a self, sql: &str) -> Result<Self::Statement<'a>, Self::PrepareError>;
+    fn prepare<'statement>(
+        &'statement mut self,
+        sql: &str,
+    ) -> Result<Self::Statement<'statement>, Self::PrepareError>;
 
     /// Start a transaction
-    fn begin_trasaction<'a>(&'a self) -> Result<Self::Transaction<'a>, Self::ExecuteError>;
+    fn begin_trasaction<'transaction>(
+        &'transaction mut self,
+    ) -> Result<Self::Transaction<'transaction>, Self::ExecuteError>;
 }

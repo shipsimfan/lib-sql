@@ -1,8 +1,8 @@
 use crate::{Bind, Statement};
 
 impl Bind for u8 {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {
@@ -11,8 +11,8 @@ impl Bind for u8 {
 }
 
 impl Bind for u16 {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {
@@ -21,8 +21,8 @@ impl Bind for u16 {
 }
 
 impl Bind for u32 {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {
@@ -31,8 +31,8 @@ impl Bind for u32 {
 }
 
 impl Bind for u64 {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {
@@ -41,8 +41,8 @@ impl Bind for u64 {
 }
 
 impl Bind for usize {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {
@@ -51,8 +51,8 @@ impl Bind for usize {
 }
 
 impl Bind for i8 {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {
@@ -61,8 +61,8 @@ impl Bind for i8 {
 }
 
 impl Bind for i16 {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {
@@ -71,8 +71,8 @@ impl Bind for i16 {
 }
 
 impl Bind for i32 {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {
@@ -81,8 +81,8 @@ impl Bind for i32 {
 }
 
 impl Bind for i64 {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {
@@ -91,8 +91,8 @@ impl Bind for i64 {
 }
 
 impl Bind for isize {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {
@@ -101,8 +101,8 @@ impl Bind for isize {
 }
 
 impl Bind for f32 {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {
@@ -111,8 +111,8 @@ impl Bind for f32 {
 }
 
 impl Bind for f64 {
-    fn bind<'a, S: Statement<'a>>(
-        &'a self,
+    fn bind<'statement, S: Statement<'statement>>(
+        &'statement self,
         idx: usize,
         statement: &mut S,
     ) -> Result<(), S::BindError> {

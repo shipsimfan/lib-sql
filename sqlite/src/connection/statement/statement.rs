@@ -1,30 +1,11 @@
-use crate::{SQLite3Connection, SQLite3FromRowError, SQLite3Rows};
-use sql::FromRow;
+use crate::{SQLite3FromRowError, SQLite3Rows, SQLite3Statement};
+use sql::{FromRow, Statement};
 use sqlite3::{
     sqlite3_bind_blob, sqlite3_bind_double, sqlite3_bind_int64, sqlite3_bind_null,
-    sqlite3_bind_text, sqlite3_finalize, sqlite3_step, try_sqlite3, SQLite3Stmt, SQLiteError,
-    SQLITE_DONE, SQLITE_OK, SQLITE_ROW,
+    sqlite3_bind_text, sqlite3_step, try_sqlite3, SQLiteError, SQLITE_DONE, SQLITE_OK, SQLITE_ROW,
 };
 
-/// A prepared SQL statement for an [`SQLite3Connection`]
-pub struct SQLite3Statement<'a> {
-    handle: *mut SQLite3Stmt,
-    conn: Option<&'a SQLite3Connection>,
-    finalize: bool,
-}
-
-impl<'a> SQLite3Statement<'a> {
-    /// Creates a new [`SQLite3Statement`]
-    pub(crate) fn new(handle: *mut SQLite3Stmt, conn: Option<&'a SQLite3Connection>) -> Self {
-        SQLite3Statement {
-            handle,
-            conn,
-            finalize: true,
-        }
-    }
-}
-
-impl<'a> sql::Statement<'a> for SQLite3Statement<'a> {
+impl<'statement> Statement<'statement> for SQLite3Statement<'statement> {
     type BindError = SQLiteError;
 
     type GetRowError = SQLite3FromRowError;
@@ -34,16 +15,14 @@ impl<'a> sql::Statement<'a> for SQLite3Statement<'a> {
     ) -> Result<impl Iterator<Item = Result<T, Self::GetRowError>>, Self::GetRowError> {
         self.finalize = false;
 
-        Ok(SQLite3Rows::new(self.handle, self.conn))
+        Ok(SQLite3Rows::new(self))
     }
 
     fn execute(self) -> Result<(), Self::GetRowError> {
-        let lock = self.conn.map(|conn| conn.lock());
         let result = match unsafe { sqlite3_step(self.handle) } {
             SQLITE_DONE | SQLITE_ROW | SQLITE_OK => Ok(()),
             error => Err(SQLite3FromRowError::Database(SQLiteError::new(error))),
         };
-        drop(lock);
         result
     }
 
@@ -59,7 +38,7 @@ impl<'a> sql::Statement<'a> for SQLite3Statement<'a> {
         try_sqlite3!(sqlite3_bind_double(self.handle, idx as _, val)).map(|_| ())
     }
 
-    fn bind_str(&mut self, idx: usize, s: &'a str) -> Result<(), Self::BindError> {
+    fn bind_str(&mut self, idx: usize, s: &'statement str) -> Result<(), Self::BindError> {
         try_sqlite3!(sqlite3_bind_text(
             self.handle,
             idx as _,
@@ -70,7 +49,7 @@ impl<'a> sql::Statement<'a> for SQLite3Statement<'a> {
         .map(|_| ())
     }
 
-    fn bind_blob(&mut self, idx: usize, b: &'a [u8]) -> Result<(), Self::BindError> {
+    fn bind_blob(&mut self, idx: usize, b: &'statement [u8]) -> Result<(), Self::BindError> {
         try_sqlite3!(sqlite3_bind_blob(
             self.handle,
             idx as _,
@@ -85,13 +64,3 @@ impl<'a> sql::Statement<'a> for SQLite3Statement<'a> {
         try_sqlite3!(sqlite3_bind_null(self.handle, idx as _)).map(|_| ())
     }
 }
-
-impl<'a> Drop for SQLite3Statement<'a> {
-    fn drop(&mut self) {
-        if self.finalize {
-            try_sqlite3!(sqlite3_finalize(self.handle)).unwrap();
-        }
-    }
-}
-
-unsafe impl<'a> Send for SQLite3Statement<'a> {}
