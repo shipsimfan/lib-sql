@@ -9,6 +9,7 @@
 mod bind;
 mod column;
 mod connection;
+mod connection_pool;
 mod row;
 mod statement;
 mod transaction;
@@ -16,6 +17,7 @@ mod transaction;
 pub use bind::Bind;
 pub use column::{Column, FromColumn};
 pub use connection::Connection;
+pub use connection_pool::ConnectionPool;
 pub use row::{FromRow, FromRowError, Row};
 pub use statement::Statement;
 pub use transaction::Transaction;

@@ -7,8 +7,10 @@
 #![warn(rustdoc::broken_intra_doc_links)]
 
 mod connection;
+mod pool;
 
 pub use connection::*;
+pub use pool::SQLite3ConnectionPool;
 
 pub use sql;
 pub use sqlite3::SQLiteError;
