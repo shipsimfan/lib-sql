@@ -1,12 +1,18 @@
 use crate::{Statement, Transaction};
 
+mod sync;
+
 /// Represents a connection to a database
-pub trait Connection: 'static {
+pub trait Connection {
     /// A prepared SQL statement
-    type Statement<'statement>: Statement<'statement>;
+    type Statement<'statement>: Statement<'statement>
+    where
+        Self: 'statement;
 
     /// A transaction which rolls back automatically if not comitted
-    type Transaction<'transaction>: Transaction<'transaction>;
+    type Transaction<'transaction>: Transaction<'transaction>
+    where
+        Self: 'transaction;
 
     /// An error that can occur while executing some SQL
     type ExecuteError: std::error::Error;
