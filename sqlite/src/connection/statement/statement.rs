@@ -18,7 +18,9 @@ impl<'statement> Statement<'statement> for SQLite3Statement<'statement> {
         Ok(SQLite3Rows::new(self))
     }
 
-    fn execute(self) -> Result<(), Self::GetRowError> {
+    fn execute(mut self) -> Result<(), Self::GetRowError> {
+        self.finalize = false;
+
         let result = match unsafe { sqlite3_step(self.handle) } {
             SQLITE_DONE | SQLITE_ROW | SQLITE_OK => Ok(()),
             error => Err(SQLite3FromRowError::Database(SQLiteError::new(error))),
