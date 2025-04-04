@@ -13,9 +13,6 @@ pub struct SQLite3Statement<'statement> {
     /// The connection this statement comes from
     #[allow(unused)]
     conn: &'statement mut SQLite3Connection,
-
-    /// Is finalizing needed?
-    finalize: bool,
 }
 
 unsafe impl<'statement> Send for SQLite3Statement<'statement> {}

@@ -5,7 +5,6 @@ use std::marker::PhantomData;
 mod error;
 mod row;
 
-mod drop;
 mod iterator;
 mod new;
 

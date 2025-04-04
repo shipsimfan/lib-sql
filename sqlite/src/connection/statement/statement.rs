@@ -11,16 +11,12 @@ impl<'statement> Statement<'statement> for SQLite3Statement<'statement> {
     type GetRowError = SQLite3FromRowError;
 
     fn rows<T: FromRow>(
-        mut self,
+        self,
     ) -> Result<impl Iterator<Item = Result<T, Self::GetRowError>>, Self::GetRowError> {
-        self.finalize = false;
-
         Ok(SQLite3Rows::new(self))
     }
 
-    fn execute(mut self) -> Result<(), Self::GetRowError> {
-        self.finalize = false;
-
+    fn execute(self) -> Result<(), Self::GetRowError> {
         let result = match unsafe { sqlite3_step(self.handle) } {
             SQLITE_DONE | SQLITE_ROW | SQLITE_OK => Ok(()),
             error => Err(SQLite3FromRowError::Database(SQLiteError::new(error))),

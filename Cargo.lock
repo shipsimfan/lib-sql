@@ -17,4 +17,4 @@ dependencies = [
 [[package]]
 name = "sqlite3"
 version = "0.1.0"
-source = "git+https://github.com/shipsimfan/lib-sqlite3#f19a1a97f80c2ad156451edab93db8a7b72bb66a"
+source = "git+https://github.com/shipsimfan/lib-sqlite3#70a178aa5d01f10adb9840e62796103cf9018bcc"

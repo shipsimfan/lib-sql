@@ -33,7 +33,7 @@ impl<'transaction> Transaction<'transaction> for SQLite3Transaction<'transaction
     }
 
     fn commit(mut self) -> Result<(), Self::ExecuteError> {
-        self.connection.execute("COMMIT;")?;
+        self.connection.execute("END;")?;
         self.comitted = true;
         Ok(())
     }
