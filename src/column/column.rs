@@ -6,6 +6,9 @@ pub trait Column<'column>: 'column + Sized {
     /// Gets the name of this column
     fn name(&self) -> Result<String, Self::Error>;
 
+    /// Is the contained value null?
+    fn is_null(&self) -> Result<bool, Self::Error>;
+
     /// Converts this column into a blob
     fn into_blob(self) -> Result<&'column [u8], Self::Error>;
 

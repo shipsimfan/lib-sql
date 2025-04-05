@@ -1,7 +1,7 @@
 use crate::{SQLite3Column, SQLite3FromRowError};
 use sqlite3::{
     sqlite3_column_blob, sqlite3_column_bytes, sqlite3_column_double, sqlite3_column_int64,
-    sqlite3_column_name, sqlite3_column_text,
+    sqlite3_column_name, sqlite3_column_text, sqlite3_column_type, SQLITE_NULL,
 };
 use std::{ffi::CStr, ptr::null};
 
@@ -15,6 +15,11 @@ impl<'column, 'statement> sql::Column<'column> for SQLite3Column<'column, 'state
         }
 
         Ok(unsafe { CStr::from_ptr(ptr) }.to_string_lossy().to_string())
+    }
+
+    fn is_null(&self) -> Result<bool, Self::Error> {
+        let r#type = unsafe { sqlite3_column_type(self.statement.handle, self.index as _) };
+        Ok(r#type == SQLITE_NULL)
     }
 
     fn into_blob(self) -> Result<&'column [u8], Self::Error> {
