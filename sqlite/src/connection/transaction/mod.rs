@@ -2,6 +2,7 @@ use crate::SQLite3Connection;
 
 mod drop;
 mod new;
+mod sql_context;
 mod transaction;
 
 /// A set of sql statements which will be rolled back automatically if not comitted

@@ -1,45 +1,29 @@
-use crate::Connection;
+use crate::{Connection, SqlContext};
 use std::sync::{MutexGuard, RwLockWriteGuard};
 
-impl<'a, T: Connection> Connection for MutexGuard<'a, T> {
-    type Statement<'statement>
-        = T::Statement<'statement>
-    where
-        'a: 'statement;
+impl<'connection, T: Connection<'connection>> Connection<'connection>
+    for MutexGuard<'connection, T>
+{
     type Transaction<'transaction>
         = T::Transaction<'transaction>
     where
-        'a: 'transaction;
-    type ExecuteError = T::ExecuteError;
-    type PrepareError = T::PrepareError;
-
-    fn execute(&mut self, sql: &str) -> Result<(), Self::ExecuteError> {
-        T::execute(&mut *self, sql)
-    }
-
-    fn prepare<'statement>(
-        &'statement mut self,
-        sql: &str,
-    ) -> Result<Self::Statement<'statement>, Self::PrepareError> {
-        T::prepare(&mut *self, sql)
-    }
+        'connection: 'transaction;
 
     fn begin_trasaction<'transaction>(
         &'transaction mut self,
-    ) -> Result<Self::Transaction<'transaction>, Self::ExecuteError> {
+    ) -> Result<Self::Transaction<'transaction>, Self::ExecuteError>
+    where
+        'connection: 'transaction,
+    {
         T::begin_trasaction(&mut *self)
     }
 }
 
-impl<'a, T: Connection> Connection for RwLockWriteGuard<'a, T> {
+impl<'context, T: SqlContext<'context>> SqlContext<'context> for MutexGuard<'context, T> {
     type Statement<'statement>
         = T::Statement<'statement>
     where
-        'a: 'statement;
-    type Transaction<'transaction>
-        = T::Transaction<'transaction>
-    where
-        'a: 'transaction;
+        'context: 'statement;
     type ExecuteError = T::ExecuteError;
     type PrepareError = T::PrepareError;
 
@@ -50,13 +34,51 @@ impl<'a, T: Connection> Connection for RwLockWriteGuard<'a, T> {
     fn prepare<'statement>(
         &'statement mut self,
         sql: &str,
-    ) -> Result<Self::Statement<'statement>, Self::PrepareError> {
+    ) -> Result<Self::Statement<'statement>, Self::PrepareError>
+    where
+        'context: 'statement,
+    {
         T::prepare(&mut *self, sql)
     }
+}
+
+impl<'connection, T: Connection<'connection>> Connection<'connection>
+    for RwLockWriteGuard<'connection, T>
+{
+    type Transaction<'transaction>
+        = T::Transaction<'transaction>
+    where
+        'connection: 'transaction;
 
     fn begin_trasaction<'transaction>(
         &'transaction mut self,
-    ) -> Result<Self::Transaction<'transaction>, Self::ExecuteError> {
+    ) -> Result<Self::Transaction<'transaction>, Self::ExecuteError>
+    where
+        'connection: 'transaction,
+    {
         T::begin_trasaction(&mut *self)
+    }
+}
+
+impl<'context, T: SqlContext<'context>> SqlContext<'context> for RwLockWriteGuard<'context, T> {
+    type Statement<'statement>
+        = T::Statement<'statement>
+    where
+        'context: 'statement;
+    type ExecuteError = T::ExecuteError;
+    type PrepareError = T::PrepareError;
+
+    fn execute(&mut self, sql: &str) -> Result<(), Self::ExecuteError> {
+        T::execute(&mut *self, sql)
+    }
+
+    fn prepare<'statement>(
+        &'statement mut self,
+        sql: &str,
+    ) -> Result<Self::Statement<'statement>, Self::PrepareError>
+    where
+        'context: 'statement,
+    {
+        T::prepare(&mut *self, sql)
     }
 }

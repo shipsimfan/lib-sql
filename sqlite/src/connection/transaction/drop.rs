@@ -1,5 +1,5 @@
 use crate::SQLite3Transaction;
-use sql::Connection;
+use sql::SqlContext;
 
 impl<'transaction> Drop for SQLite3Transaction<'transaction> {
     fn drop(&mut self) {

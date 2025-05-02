@@ -11,6 +11,7 @@ mod drop;
 mod execute;
 mod open;
 mod prepare;
+mod sql_context;
 
 pub use column::SQLite3Column;
 pub use execute_error::SQLite3ExecuteError;

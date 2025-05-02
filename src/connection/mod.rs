@@ -1,36 +1,18 @@
-use crate::{Statement, Transaction};
+use crate::{SqlContext, Transaction};
 
 mod sync;
 
 /// Represents a connection to a database
-pub trait Connection {
-    /// A prepared SQL statement
-    type Statement<'statement>: Statement<'statement>
-    where
-        Self: 'statement;
-
+pub trait Connection<'connection>: SqlContext<'connection> {
     /// A transaction which rolls back automatically if not comitted
     type Transaction<'transaction>: Transaction<'transaction>
     where
-        Self: 'transaction;
-
-    /// An error that can occur while executing some SQL
-    type ExecuteError: std::error::Error;
-
-    /// An error that can occur while preparing an SQL statement
-    type PrepareError: std::error::Error;
-
-    /// Runs an block of SQL code
-    fn execute(&mut self, sql: &str) -> Result<(), Self::ExecuteError>;
-
-    /// Prepares an SQL statement for binding and running
-    fn prepare<'statement>(
-        &'statement mut self,
-        sql: &str,
-    ) -> Result<Self::Statement<'statement>, Self::PrepareError>;
+        'connection: 'transaction;
 
     /// Start a transaction
     fn begin_trasaction<'transaction>(
         &'transaction mut self,
-    ) -> Result<Self::Transaction<'transaction>, Self::ExecuteError>;
+    ) -> Result<Self::Transaction<'transaction>, Self::ExecuteError>
+    where
+        'connection: 'transaction;
 }

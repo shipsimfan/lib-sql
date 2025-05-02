@@ -1,5 +1,5 @@
 use sqlite::{
-    sql::{Connection, Statement},
+    sql::{SqlContext, Statement},
     SQLite3Connection,
 };
 

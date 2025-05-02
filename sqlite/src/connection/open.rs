@@ -1,5 +1,5 @@
 use crate::{SQLite3Connection, SQLite3ExecuteError};
-use sql::Connection;
+use sql::SqlContext;
 use sqlite3::{
     sqlite3_close, sqlite3_open_v2, try_sqlite3, SQLITE_OPEN_CREATE, SQLITE_OPEN_NOMUTEX,
     SQLITE_OPEN_READWRITE,

@@ -1,5 +1,5 @@
 use crate::{SQLite3Connection, SQLite3ExecuteError, SQLite3Transaction};
-use sql::Connection;
+use sql::SqlContext;
 
 impl<'transaction> SQLite3Transaction<'transaction> {
     /// Creates a new [`SQLite3Transaction`]
