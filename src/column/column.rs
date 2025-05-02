@@ -1,7 +1,9 @@
+use crate::FromColumnError;
+
 /// A column of a row returned from an SQL query
 pub trait Column<'column>: 'column + Sized {
     /// An error that occur while trying to convert this column to a specific type
-    type Error: std::error::Error;
+    type Error: FromColumnError;
 
     /// Gets the name of this column
     fn name(&self) -> Result<String, Self::Error>;

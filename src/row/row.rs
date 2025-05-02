@@ -6,7 +6,7 @@ pub trait Row<'row>: 'row {
     type Error: FromRowError;
 
     /// The column type produced for each column
-    type Column<'column>: Column<'column, Error = Self::Error>
+    type Column<'column>: Column<'column, Error = <Self::Error as FromRowError>::FromColumnError>
     where
         'row: 'column;
 

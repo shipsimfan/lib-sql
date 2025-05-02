@@ -16,7 +16,7 @@ mod statement;
 mod transaction;
 
 pub use bind::Bind;
-pub use column::{Column, FromColumn};
+pub use column::{Column, FromColumn, FromColumnError};
 pub use connection::Connection;
 pub use connection_pool::ConnectionPool;
 pub use context::SqlContext;

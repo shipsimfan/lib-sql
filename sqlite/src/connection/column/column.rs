@@ -1,4 +1,4 @@
-use crate::{SQLite3Column, SQLite3FromRowError};
+use crate::{SQLite3Column, SQLite3FromColumnError};
 use sqlite3::{
     sqlite3_column_blob, sqlite3_column_bytes, sqlite3_column_double, sqlite3_column_int64,
     sqlite3_column_name, sqlite3_column_text, sqlite3_column_type, SQLITE_NULL,
@@ -6,7 +6,7 @@ use sqlite3::{
 use std::{ffi::CStr, ptr::null};
 
 impl<'column, 'statement> sql::Column<'column> for SQLite3Column<'column, 'statement> {
-    type Error = SQLite3FromRowError;
+    type Error = SQLite3FromColumnError;
 
     fn name(&self) -> Result<String, Self::Error> {
         let ptr = unsafe { sqlite3_column_name(self.statement.handle, self.index as _) };

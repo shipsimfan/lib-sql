@@ -9,5 +9,6 @@ pub trait FromRow: Sized {
 impl<T: FromColumn> FromRow for T {
     fn from_row<'row, R: Row<'row>>(mut row: R) -> Result<Self, R::Error> {
         T::from_column(row.next()?.ok_or(R::Error::missing_column(""))?)
+            .map_err(|error| R::Error::invalid_value("", error))
     }
 }

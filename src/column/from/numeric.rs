@@ -1,73 +1,95 @@
-use crate::{Column, FromColumn};
+use crate::{Column, FromColumn, FromColumnError};
+use std::num::NonZero;
 
-impl FromColumn for u8 {
-    fn from_column<'column, C: Column<'column>>(column: C) -> Result<u8, C::Error> {
-        column.into_u8()
-    }
+macro_rules! from_number {
+    [$($type: ident -> $fn: ident),*] => {$(
+        impl FromColumn for $type {
+            fn from_column<'column, C: Column<'column>>(column: C) -> Result<$type, C::Error> {
+                column.$fn()
+            }
+
+            fn validate<E: FromColumnError>(&self, min: Option<f64>, max: Option<f64>) -> Result<(), E> {
+                if let Some(min) = min {
+                    if *self < min as _ {
+                        return Err(E::custom("value is too small"));
+                    }
+                }
+
+                if let Some(max) = max {
+                    if *self > max as _ {
+                        return Err(E::custom("value is too large"))
+                    }
+                }
+
+                Ok(())
+            }
+        }
+
+        impl FromColumn for NonZero<$type> {
+            fn from_column<'column, C: Column<'column>>(column: C) -> Result<NonZero<$type>, C::Error> {
+                NonZero::new(column.$fn()?).ok_or(C::Error::custom("value cannot be zero"))
+            }
+
+            fn validate<E: FromColumnError>(&self, min: Option<f64>, max: Option<f64>) -> Result<(), E> {
+                self.get().validate(min, max)
+            }
+        }
+    )*};
 }
 
-impl FromColumn for u16 {
-    fn from_column<'column, C: Column<'column>>(column: C) -> Result<u16, C::Error> {
-        column.into_u16()
-    }
-}
-
-impl FromColumn for u32 {
-    fn from_column<'column, C: Column<'column>>(column: C) -> Result<u32, C::Error> {
-        column.into_u32()
-    }
-}
-
-impl FromColumn for u64 {
-    fn from_column<'column, C: Column<'column>>(column: C) -> Result<u64, C::Error> {
-        column.into_u64()
-    }
-}
-
-impl FromColumn for usize {
-    fn from_column<'column, C: Column<'column>>(column: C) -> Result<usize, C::Error> {
-        column.into_usize()
-    }
-}
-
-impl FromColumn for i8 {
-    fn from_column<'column, C: Column<'column>>(column: C) -> Result<i8, C::Error> {
-        column.into_i8()
-    }
-}
-
-impl FromColumn for i16 {
-    fn from_column<'column, C: Column<'column>>(column: C) -> Result<i16, C::Error> {
-        column.into_i16()
-    }
-}
-
-impl FromColumn for i32 {
-    fn from_column<'column, C: Column<'column>>(column: C) -> Result<i32, C::Error> {
-        column.into_i32()
-    }
-}
-
-impl FromColumn for i64 {
-    fn from_column<'column, C: Column<'column>>(column: C) -> Result<i64, C::Error> {
-        column.into_i64()
-    }
-}
-
-impl FromColumn for isize {
-    fn from_column<'column, C: Column<'column>>(column: C) -> Result<isize, C::Error> {
-        column.into_isize()
-    }
-}
+from_number!(
+    u8 -> into_u8,
+    u16 -> into_u16,
+    u32 -> into_u32,
+    u64 -> into_u64,
+    usize -> into_usize,
+    i8 -> into_i8,
+    i16 -> into_i16,
+    i32 -> into_i32,
+    i64 -> into_i64,
+    isize -> into_isize
+);
 
 impl FromColumn for f32 {
     fn from_column<'column, C: Column<'column>>(column: C) -> Result<f32, C::Error> {
         column.into_f32()
+    }
+
+    fn validate<E: FromColumnError>(&self, min: Option<f64>, max: Option<f64>) -> Result<(), E> {
+        if let Some(min) = min {
+            if *self < min as _ {
+                return Err(E::custom("value is too small"));
+            }
+        }
+
+        if let Some(max) = max {
+            if *self > max as _ {
+                return Err(E::custom("value is too large"));
+            }
+        }
+
+        Ok(())
     }
 }
 
 impl FromColumn for f64 {
     fn from_column<'column, C: Column<'column>>(column: C) -> Result<f64, C::Error> {
         column.into_f64()
+    }
+
+    fn validate<E: FromColumnError>(&self, min: Option<f64>, max: Option<f64>) -> Result<(), E> {
+        if let Some(min) = min {
+            if *self < min {
+                return Err(E::custom("value is too small"));
+            }
+        }
+
+        if let Some(max) = max {
+            if *self > max {
+                return Err(E::custom("value is too large"));
+            }
+        }
+
+        Ok(())
     }
 }
