@@ -3,8 +3,40 @@
 version = 4
 
 [[package]]
+name = "proc-macro-util"
+version = "0.1.0"
+source = "git+https://github.com/shipsimfan/lib-proc-macro-util#bfe665dc8a59853e16aaf3a45e5c10ceeb883eb5"
+dependencies = [
+ "proc-macro-util-base",
+ "proc-macro-util-macros",
+]
+
+[[package]]
+name = "proc-macro-util-base"
+version = "0.1.0"
+source = "git+https://github.com/shipsimfan/lib-proc-macro-util#bfe665dc8a59853e16aaf3a45e5c10ceeb883eb5"
+
+[[package]]
+name = "proc-macro-util-macros"
+version = "0.1.0"
+source = "git+https://github.com/shipsimfan/lib-proc-macro-util#bfe665dc8a59853e16aaf3a45e5c10ceeb883eb5"
+dependencies = [
+ "proc-macro-util-base",
+]
+
+[[package]]
 name = "sql"
 version = "0.1.0"
+dependencies = [
+ "sql-macro",
+]
+
+[[package]]
+name = "sql-macro"
+version = "0.1.0"
+dependencies = [
+ "proc-macro-util",
+]
 
 [[package]]
 name = "sqlite"

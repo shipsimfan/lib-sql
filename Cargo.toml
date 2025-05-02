@@ -1,11 +1,12 @@
 [workspace]
 default-members = ["."]
-members = ["sqlite"]
+members = ["sqlite", "macro"]
 
 [workspace.package]
 description = "Libraries for interacting with various SQL database management systems"
 
 authors = ["Lance Hart <me@lancehart.ca>"]
+version = "0.1.0"
 edition = "2021"
 repository = "https://github.com/shipsimfan/lib-sql"
 license = "GPL-3.0-or-later"
@@ -18,10 +19,16 @@ sql.path = "."
 [package]
 name = "sql"
 description = "Common interface definition for all supported SQL database management systems"
-version = "0.1.0"
 
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
+version.workspace = true
 license.workspace = true
 publish.workspace = true
+
+[features]
+macro = ["dep:sql-macro"]
+
+[dependencies]
+sql-macro = { path = "macro", optional = true }
