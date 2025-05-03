@@ -1,6 +1,6 @@
 use fields::Fields;
 use proc_macro_util::{
-    ast::{GenericParams, OuterAttribute, Visibility, WhereClause},
+    ast::{OuterAttribute, Visibility},
     tokens::Identifier,
 };
 use std::borrow::Cow;
@@ -21,5 +21,5 @@ pub struct Input<'a> {
     pub name: Cow<'a, Identifier>,
 
     /// The fields which make up the struct
-    pub fields: Fields,
+    pub fields: Fields<'a>,
 }
