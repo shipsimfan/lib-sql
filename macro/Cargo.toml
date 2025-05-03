@@ -10,5 +10,8 @@ publish.workspace = true
 [lib]
 proc-macro = true
 
+[features]
+lib-data-format = []
+
 [dependencies]
 proc-macro-util.git = "https://github.com/shipsimfan/lib-proc-macro-util"

@@ -11,6 +11,7 @@ publish.workspace = true
 
 [features]
 macro = ["sql/macro"]
+lib-data-format = ["sql/lib-data-format"]
 
 [dependencies]
 sql.workspace = true
