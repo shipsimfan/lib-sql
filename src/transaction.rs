@@ -6,5 +6,5 @@ pub trait Transaction<'transaction>: SqlContext<'transaction> {
     fn last_insert_id(&mut self) -> Option<usize>;
 
     /// Commits the effects of this transaction
-    fn commit(self) -> Result<(), Self::ExecuteError>;
+    fn commit(self) -> Result<(), Self::Error>;
 }

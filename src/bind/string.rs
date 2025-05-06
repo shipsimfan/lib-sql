@@ -5,7 +5,7 @@ impl Bind for str {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_str(idx, self)
     }
 }
@@ -15,7 +15,7 @@ impl Bind for String {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_str(idx, self)
     }
 }

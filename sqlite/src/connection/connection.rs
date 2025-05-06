@@ -9,7 +9,7 @@ impl<'connection> Connection<'connection> for SQLite3Connection {
 
     fn begin_trasaction<'transaction>(
         &'transaction mut self,
-    ) -> Result<Self::Transaction<'transaction>, Self::ExecuteError>
+    ) -> Result<Self::Transaction<'transaction>, Self::Error>
     where
         'connection: 'transaction,
     {

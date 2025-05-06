@@ -12,5 +12,5 @@ pub trait Bind {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError>;
+    ) -> Result<(), S::Error>;
 }

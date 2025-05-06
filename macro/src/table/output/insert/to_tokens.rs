@@ -7,6 +7,8 @@ impl<'a> ToTokens for InsertOutput<'a> {
             attributes,
             visibility,
             name,
+            struct_fields,
+            body,
         } = self;
 
         let name2 = name.clone();
@@ -20,18 +22,13 @@ impl<'a> ToTokens for InsertOutput<'a> {
             #attributes
             #derive
             #visibility struct #name {
-
+                #struct_fields
             }
 
             impl #name2 {
                 /// Inserts a single row into the table
-                pub fn insert<'a, DB: ::sql::SqlContext<'a>>(&self, db: DB) {
-
-                }
-
-                /// Inserts multiple rows into the table
-                pub fn insert_many<'a, 'b, DB: ::sql::SqlContext<'a>, I: IntoIterator<Item = &'b Self>>(db: DB, iter: I) {
-
+                pub fn insert<'a, DB: ::sql::SqlContext<'a>>(&self, db: DB) -> Result<(), DB::Error> {
+                    #body
                 }
             }
         }

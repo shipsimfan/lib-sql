@@ -28,9 +28,8 @@ proc_macro_attribute!(
     ///               table
     ///  * `delete` - Deletes a row from the table based on the primary key
     ///
-    /// The inserting struct will have two functions:
+    /// The inserting struct will have one function:
     ///  * `insert` - Inserts a row into the table based on the contents of the struct
-    ///  * `insert_many` - Inserts multiple rows into the table from an iterator
     ///
     /// The updating struct will have one function:
     ///  * `update` - Updates the row with the provided primary key based on the contents of the
@@ -55,6 +54,9 @@ proc_macro_attribute!(
     ///                                 resulting inner join.
     ///  * #[min = ...], #[max = ...] - Validate either the value or length, based on data type, of
     ///                                 a value before inserting or updating.
+    ///  * #[default] - Uses a default value as defined in the database for inserting if one isn't
+    ///                 provided
+    ///  * #[default = ...] - Sets a default value for inserting if one isn't provided
     ///
     /// The following flags can be provided as a comma seperated list to #[sql_table()]:
     ///  - `not_deletable` - Prevents the generation of the delete function on the selecting struct

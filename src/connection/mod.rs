@@ -12,7 +12,7 @@ pub trait Connection<'connection>: SqlContext<'connection> {
     /// Start a transaction
     fn begin_trasaction<'transaction>(
         &'transaction mut self,
-    ) -> Result<Self::Transaction<'transaction>, Self::ExecuteError>
+    ) -> Result<Self::Transaction<'transaction>, Self::Error>
     where
         'connection: 'transaction;
 }

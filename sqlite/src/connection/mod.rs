@@ -1,7 +1,6 @@
 use sqlite3::SQLite3;
 
 mod column;
-mod execute_error;
 mod rows;
 mod statement;
 mod transaction;
@@ -14,7 +13,6 @@ mod prepare;
 mod sql_context;
 
 pub use column::{SQLite3Column, SQLite3FromColumnError};
-pub use execute_error::SQLite3ExecuteError;
 pub use rows::{SQLite3FromRowError, SQLite3Row, SQLite3Rows};
 pub use statement::SQLite3Statement;
 pub use transaction::SQLite3Transaction;

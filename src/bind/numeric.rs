@@ -5,7 +5,7 @@ impl Bind for u8 {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_u8(idx, *self)
     }
 }
@@ -15,7 +15,7 @@ impl Bind for u16 {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_u16(idx, *self)
     }
 }
@@ -25,7 +25,7 @@ impl Bind for u32 {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_u32(idx, *self)
     }
 }
@@ -35,7 +35,7 @@ impl Bind for u64 {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_u64(idx, *self)
     }
 }
@@ -45,7 +45,7 @@ impl Bind for usize {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_usize(idx, *self)
     }
 }
@@ -55,7 +55,7 @@ impl Bind for i8 {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_i8(idx, *self)
     }
 }
@@ -65,7 +65,7 @@ impl Bind for i16 {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_i16(idx, *self)
     }
 }
@@ -75,7 +75,7 @@ impl Bind for i32 {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_i32(idx, *self)
     }
 }
@@ -85,7 +85,7 @@ impl Bind for i64 {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_i64(idx, *self)
     }
 }
@@ -95,7 +95,7 @@ impl Bind for isize {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_isize(idx, *self)
     }
 }
@@ -105,7 +105,7 @@ impl Bind for f32 {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_f32(idx, *self)
     }
 }
@@ -115,7 +115,7 @@ impl Bind for f64 {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_f64(idx, *self)
     }
 }

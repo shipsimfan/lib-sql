@@ -14,6 +14,7 @@ impl<'a> Field<'a> {
         let mut references = None;
         let mut min = None;
         let mut max = None;
+        let mut default = None;
 
         for attribute in field.attributes {
             if attribute.attr.path.leading.is_some() || attribute.attr.path.remaining.len() > 0 {
@@ -91,8 +92,32 @@ impl<'a> Field<'a> {
                         _ => return Err(Error::new_at("`max` must have a value specified", span)),
                     }
                 }
+                "default" => {
+                    if default.is_some() {
+                        return Err(Error::new_at(
+                            "cannot have multiple default values on a single field",
+                            span,
+                        ));
+                    }
+
+                    match attribute.attr.input {
+                        Some(AttrInput::Expression(_, expression)) => {
+                            default = Some(Some(expression))
+                        }
+                        None => default = Some(None),
+                        Some(AttrInput::Group(group)) => {
+                            return Err(Error::new_at("unexpected token", group.span))
+                        }
+                    }
+                }
                 _ => attributes.push(attribute),
             }
+        }
+
+        if auto_increment && !primary_key {
+            return Err(Error::new(
+                "cannot have auto_increment on a field that isn't a primary key",
+            ));
         }
 
         Ok(Field {
@@ -105,6 +130,7 @@ impl<'a> Field<'a> {
             references,
             min,
             max,
+            default,
         })
     }
 }

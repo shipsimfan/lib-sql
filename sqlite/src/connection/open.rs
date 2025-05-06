@@ -1,4 +1,4 @@
-use crate::{SQLite3Connection, SQLite3ExecuteError};
+use crate::{SQLite3Connection, SQLite3Error};
 use sql::SqlContext;
 use sqlite3::{
     sqlite3_close, sqlite3_open_v2, try_sqlite3, SQLITE_OPEN_CREATE, SQLITE_OPEN_NOMUTEX,
@@ -8,7 +8,7 @@ use std::{path::Path, ptr::null_mut};
 
 impl SQLite3Connection {
     /// Attempts to open the database at `path`
-    pub fn open<P: AsRef<Path>>(path: P) -> Result<Self, SQLite3ExecuteError> {
+    pub fn open<P: AsRef<Path>>(path: P) -> Result<Self, SQLite3Error> {
         let mut path = path.as_ref().as_os_str().as_encoded_bytes().to_vec();
         path.push(0);
 
@@ -22,7 +22,7 @@ impl SQLite3Connection {
         .map(|_| SQLite3Connection { handle })
         .map_err(|error| {
             try_sqlite3!(sqlite3_close(handle)).unwrap();
-            SQLite3ExecuteError::new(error.to_string())
+            SQLite3Error::Prepare(error)
         })?;
 
         connection.execute("PRAGMA foreign_keys = ON;")?;

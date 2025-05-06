@@ -5,7 +5,7 @@ impl Bind for [u8] {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_blob(idx, self)
     }
 }
@@ -15,7 +15,7 @@ impl Bind for Vec<u8> {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_blob(idx, self)
     }
 }
@@ -25,7 +25,7 @@ impl Bind for Box<[u8]> {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_blob(idx, self)
     }
 }

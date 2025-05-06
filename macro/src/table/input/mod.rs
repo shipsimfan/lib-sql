@@ -9,6 +9,8 @@ mod fields;
 
 mod extract;
 
+pub use fields::Field;
+
 /// The extracted input values for potentially producing the required tables
 pub struct Input<'a> {
     /// The attributes defined for the struct

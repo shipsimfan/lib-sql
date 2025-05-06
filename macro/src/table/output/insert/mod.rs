@@ -1,7 +1,12 @@
+use body::InsertBody;
 use proc_macro_util::{
     ast::{OuterAttribute, Visibility},
-    tokens::Identifier,
+    tokens::{Identifier, Literal},
 };
+use struct_field::InsertStructField;
+
+mod body;
+mod struct_field;
 
 mod from_input;
 mod to_tokens;
@@ -16,4 +21,10 @@ pub struct InsertOutput<'a> {
 
     /// The name of this struct
     name: Identifier,
+
+    /// The fields to insert into the structure
+    struct_fields: Vec<InsertStructField<'a>>,
+
+    /// The body of the insert function
+    body: InsertBody,
 }

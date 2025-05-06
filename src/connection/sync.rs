@@ -11,7 +11,7 @@ impl<'connection, T: Connection<'connection>> Connection<'connection>
 
     fn begin_trasaction<'transaction>(
         &'transaction mut self,
-    ) -> Result<Self::Transaction<'transaction>, Self::ExecuteError>
+    ) -> Result<Self::Transaction<'transaction>, Self::Error>
     where
         'connection: 'transaction,
     {
@@ -24,17 +24,16 @@ impl<'context, T: SqlContext<'context>> SqlContext<'context> for MutexGuard<'con
         = T::Statement<'statement>
     where
         'context: 'statement;
-    type ExecuteError = T::ExecuteError;
-    type PrepareError = T::PrepareError;
+    type Error = T::Error;
 
-    fn execute(&mut self, sql: &str) -> Result<(), Self::ExecuteError> {
+    fn execute(&mut self, sql: &str) -> Result<(), Self::Error> {
         T::execute(&mut *self, sql)
     }
 
     fn prepare<'statement>(
         &'statement mut self,
         sql: &str,
-    ) -> Result<Self::Statement<'statement>, Self::PrepareError>
+    ) -> Result<Self::Statement<'statement>, Self::Error>
     where
         'context: 'statement,
     {
@@ -52,7 +51,7 @@ impl<'connection, T: Connection<'connection>> Connection<'connection>
 
     fn begin_trasaction<'transaction>(
         &'transaction mut self,
-    ) -> Result<Self::Transaction<'transaction>, Self::ExecuteError>
+    ) -> Result<Self::Transaction<'transaction>, Self::Error>
     where
         'connection: 'transaction,
     {
@@ -65,17 +64,16 @@ impl<'context, T: SqlContext<'context>> SqlContext<'context> for RwLockWriteGuar
         = T::Statement<'statement>
     where
         'context: 'statement;
-    type ExecuteError = T::ExecuteError;
-    type PrepareError = T::PrepareError;
+    type Error = T::Error;
 
-    fn execute(&mut self, sql: &str) -> Result<(), Self::ExecuteError> {
+    fn execute(&mut self, sql: &str) -> Result<(), Self::Error> {
         T::execute(&mut *self, sql)
     }
 
     fn prepare<'statement>(
         &'statement mut self,
         sql: &str,
-    ) -> Result<Self::Statement<'statement>, Self::PrepareError>
+    ) -> Result<Self::Statement<'statement>, Self::Error>
     where
         'context: 'statement,
     {

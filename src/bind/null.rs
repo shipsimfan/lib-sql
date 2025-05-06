@@ -6,7 +6,7 @@ impl Bind for () {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_null(idx)
     }
 }
@@ -16,7 +16,7 @@ impl<T> Bind for PhantomData<T> {
         &'statement self,
         idx: usize,
         statement: &mut S,
-    ) -> Result<(), S::BindError> {
+    ) -> Result<(), S::Error> {
         statement.bind_null(idx)
     }
 }

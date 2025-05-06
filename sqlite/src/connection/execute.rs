@@ -1,10 +1,10 @@
-use crate::{SQLite3Connection, SQLite3ExecuteError};
+use crate::{SQLite3Connection, SQLite3Error};
 use sqlite3::{sqlite3_exec, sqlite3_free, try_sqlite3};
 use std::{ffi::CStr, ptr::null_mut};
 
 impl SQLite3Connection {
     /// Executes `sql` on `handle`
-    pub(crate) fn do_execute(&mut self, sql: &str) -> Result<(), SQLite3ExecuteError> {
+    pub(crate) fn do_execute(&mut self, sql: &str) -> Result<(), SQLite3Error> {
         let sql = format!("{}\0", sql);
 
         let mut errmsg_ptr = null_mut();
@@ -21,7 +21,7 @@ impl SQLite3Connection {
         }
 
         if errmsg_ptr == null_mut() {
-            return Err(SQLite3ExecuteError::new(result.unwrap_err().to_string()));
+            return Err(SQLite3Error::Prepare(result.unwrap_err()));
         }
 
         let errmsg = unsafe { CStr::from_ptr(errmsg_ptr) }
@@ -30,6 +30,6 @@ impl SQLite3Connection {
 
         unsafe { sqlite3_free(errmsg_ptr.cast()) };
 
-        Err(SQLite3ExecuteError::new(errmsg))
+        Err(SQLite3Error::Execute(errmsg))
     }
 }

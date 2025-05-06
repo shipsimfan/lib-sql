@@ -1,6 +1,5 @@
-use crate::{SQLite3ExecuteError, SQLite3Statement, SQLite3Transaction};
+use crate::{SQLite3Error, SQLite3Statement, SQLite3Transaction};
 use sql::SqlContext;
-use sqlite3::SQLiteError;
 
 impl<'context> SqlContext<'context> for SQLite3Transaction<'context> {
     type Statement<'statement>
@@ -8,18 +7,16 @@ impl<'context> SqlContext<'context> for SQLite3Transaction<'context> {
     where
         'context: 'statement;
 
-    type ExecuteError = SQLite3ExecuteError;
+    type Error = SQLite3Error;
 
-    type PrepareError = SQLiteError;
-
-    fn execute(&mut self, sql: &str) -> Result<(), Self::ExecuteError> {
+    fn execute(&mut self, sql: &str) -> Result<(), Self::Error> {
         self.connection.execute(sql)
     }
 
     fn prepare<'statement>(
         &'statement mut self,
         sql: &str,
-    ) -> Result<Self::Statement<'statement>, Self::PrepareError>
+    ) -> Result<Self::Statement<'statement>, Self::Error>
     where
         'context: 'statement,
     {
