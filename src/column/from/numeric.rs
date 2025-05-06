@@ -1,7 +1,7 @@
 use crate::{Column, FromColumn, FromColumnError};
 use std::num::NonZero;
 
-macro_rules! from_number {
+macro_rules! from_integer {
     [$($type: ident -> $fn: ident),*] => {$(
         impl FromColumn for $type {
             fn from_column<'column, C: Column<'column>>(column: C) -> Result<$type, C::Error> {
@@ -37,7 +37,7 @@ macro_rules! from_number {
     )*};
 }
 
-from_number!(
+from_integer!(
     u8 -> into_u8,
     u16 -> into_u16,
     u32 -> into_u32,

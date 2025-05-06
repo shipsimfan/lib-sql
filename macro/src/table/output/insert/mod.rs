@@ -1,7 +1,7 @@
 use body::InsertBody;
 use proc_macro_util::{
     ast::{OuterAttribute, Visibility},
-    tokens::{Identifier, Literal},
+    tokens::Identifier,
 };
 use struct_field::InsertStructField;
 

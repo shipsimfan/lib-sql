@@ -15,12 +15,14 @@ impl<'a> InsertOutput<'a> {
             }
         }
 
+        let body = InsertBody::from_input(&input.fields.fields, &table_name);
+
         InsertOutput {
             attributes: input.attributes.clone(),
             visibility: input.visibility.clone(),
             name,
             struct_fields,
-            body: InsertBody::Constant,
+            body,
         }
     }
 }

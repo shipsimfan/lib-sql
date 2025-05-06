@@ -27,7 +27,7 @@ impl<'a> ToTokens for InsertOutput<'a> {
 
             impl #name2 {
                 /// Inserts a single row into the table
-                pub fn insert<'a, DB: ::sql::SqlContext<'a>>(&self, db: DB) -> Result<(), DB::Error> {
+                pub fn insert<'a, DB: ::sql::SqlContext<'a>>(&self, db: &mut DB) -> Result<(), DB::Error> {
                     #body
                 }
             }

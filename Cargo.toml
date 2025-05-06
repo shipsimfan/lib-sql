@@ -29,7 +29,9 @@ publish.workspace = true
 
 [features]
 macro = ["dep:sql-macro"]
-lib-data-format = ["sql-macro/lib-data-format"]
+lib-data-format = ["sql-macro/lib-data-format", "dep:data-format"]
 
 [dependencies]
 sql-macro = { path = "macro", optional = true }
+
+data-format = { git = "https://github.com/shipsimfan/lib-data-format", optional = true }
