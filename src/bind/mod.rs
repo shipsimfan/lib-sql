@@ -1,6 +1,7 @@
 use crate::{FromColumnError, Statement};
 
 mod blob;
+mod cow;
 mod null;
 mod numeric;
 mod option;
