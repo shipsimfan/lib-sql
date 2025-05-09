@@ -1,6 +1,6 @@
 [workspace]
 default-members = ["."]
-members = ["sqlite", "macro"]
+members = ["sqlite"]
 
 [workspace.package]
 description = "Libraries for interacting with various SQL database management systems"
@@ -28,10 +28,7 @@ license.workspace = true
 publish.workspace = true
 
 [features]
-macro = ["dep:sql-macro"]
-lib-data-format = ["sql-macro/lib-data-format", "dep:data-format"]
+lib-data-format = ["dep:data-format"]
 
 [dependencies]
-sql-macro = { path = "macro", optional = true }
-
 data-format = { git = "https://github.com/shipsimfan/lib-data-format", optional = true }

@@ -25,6 +25,3 @@ pub use nullable::Nullable;
 pub use row::{FromRow, FromRowError, Row};
 pub use statement::Statement;
 pub use transaction::Transaction;
-
-#[cfg(feature = "macro")]
-pub use sql_macro::sql_table;

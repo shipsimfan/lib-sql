@@ -45,14 +45,6 @@ name = "sql"
 version = "0.1.0"
 dependencies = [
  "data-format",
- "sql-macro",
-]
-
-[[package]]
-name = "sql-macro"
-version = "0.1.0"
-dependencies = [
- "proc-macro-util",
 ]
 
 [[package]]
