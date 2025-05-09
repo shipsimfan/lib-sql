@@ -1,7 +1,7 @@
-use crate::{SQLite3Column, SQLite3FromRowError, SQLite3Row};
+use crate::{SQLite3Column, SQLite3Error, SQLite3Row};
 
 impl<'row, 'statement> sql::Row<'row> for SQLite3Row<'row, 'statement> {
-    type Error = SQLite3FromRowError;
+    type Error = SQLite3Error;
 
     type Column<'column>
         = SQLite3Column<'column, 'statement>

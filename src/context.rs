@@ -1,4 +1,4 @@
-use crate::Statement;
+use crate::{FromRowError, Statement};
 
 /// A context in which SQL can be executed
 pub trait SqlContext<'context>: 'context {
@@ -8,7 +8,7 @@ pub trait SqlContext<'context>: 'context {
         'context: 'statement;
 
     /// An error that can occur while executing or preparing some SQL
-    type Error: std::error::Error;
+    type Error: FromRowError;
 
     /// Runs an block of SQL code
     fn execute(&mut self, sql: &str) -> Result<(), Self::Error>;

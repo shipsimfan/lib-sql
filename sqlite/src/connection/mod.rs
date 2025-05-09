@@ -13,7 +13,7 @@ mod prepare;
 mod sql_context;
 
 pub use column::{SQLite3Column, SQLite3FromColumnError};
-pub use rows::{SQLite3FromRowError, SQLite3Row, SQLite3Rows};
+pub use rows::{SQLite3Row, SQLite3Rows};
 pub use statement::SQLite3Statement;
 pub use transaction::SQLite3Transaction;
 

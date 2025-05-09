@@ -19,6 +19,6 @@ impl SQLite3Connection {
             null_mut()
         ))
         .map(|_| SQLite3Statement::new(stmt_handle, self))
-        .map_err(SQLite3Error::Prepare)
+        .map_err(SQLite3Error::Database)
     }
 }

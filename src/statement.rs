@@ -1,9 +1,9 @@
-use crate::{Bind, FromRow};
+use crate::{Bind, FromRow, FromRowError};
 
 /// A prepared SQL statement
 pub trait Statement<'statement>: Sized {
     /// An error that can occur while binding a value
-    type Error: std::error::Error;
+    type Error: FromRowError;
 
     /// Execute the query and get the result rows
     fn rows<T: FromRow>(self) -> Result<impl Iterator<Item = Result<T, Self::Error>>, Self::Error>;

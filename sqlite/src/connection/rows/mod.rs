@@ -2,13 +2,11 @@ use crate::SQLite3Statement;
 use sql::FromRow;
 use std::marker::PhantomData;
 
-mod error;
 mod row;
 
 mod iterator;
 mod new;
 
-pub use error::SQLite3FromRowError;
 pub use row::SQLite3Row;
 
 /// An iterator over a set of rows returned as the result of a query to an SQLite3 database

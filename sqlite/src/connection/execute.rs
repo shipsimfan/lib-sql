@@ -21,7 +21,7 @@ impl SQLite3Connection {
         }
 
         if errmsg_ptr == null_mut() {
-            return Err(SQLite3Error::Prepare(result.unwrap_err()));
+            return Err(SQLite3Error::Database(result.unwrap_err()));
         }
 
         let errmsg = unsafe { CStr::from_ptr(errmsg_ptr) }
@@ -30,6 +30,6 @@ impl SQLite3Connection {
 
         unsafe { sqlite3_free(errmsg_ptr.cast()) };
 
-        Err(SQLite3Error::Execute(errmsg))
+        Err(SQLite3Error::Custom(errmsg))
     }
 }

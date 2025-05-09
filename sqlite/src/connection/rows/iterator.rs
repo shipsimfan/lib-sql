@@ -12,6 +12,6 @@ impl<'statement, T: FromRow> Iterator for SQLite3Rows<'statement, T> {
             error => return Some(Err(SQLiteError::new(error).into())),
         }
 
-        Some(T::from_row(SQLite3Row::new(&mut self.statement)).map_err(SQLite3Error::FromRow))
+        Some(T::from_row(SQLite3Row::new(&mut self.statement)))
     }
 }

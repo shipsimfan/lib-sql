@@ -1,4 +1,4 @@
-use crate::{SQLite3Error, SQLite3FromRowError, SQLite3Rows, SQLite3Statement};
+use crate::{SQLite3Error, SQLite3Rows, SQLite3Statement};
 use sql::{FromRow, Statement};
 use sqlite3::{
     sqlite3_bind_blob, sqlite3_bind_double, sqlite3_bind_int64, sqlite3_bind_null,
@@ -15,9 +15,7 @@ impl<'statement> Statement<'statement> for SQLite3Statement<'statement> {
     fn execute(self) -> Result<(), Self::Error> {
         let result = match unsafe { sqlite3_step(self.handle) } {
             SQLITE_DONE | SQLITE_ROW | SQLITE_OK => Ok(()),
-            error => Err(SQLite3Error::FromRow(SQLite3FromRowError::Database(
-                SQLiteError::new(error),
-            ))),
+            error => Err(SQLiteError::new(error).into()),
         };
         result
     }
@@ -29,13 +27,13 @@ impl<'statement> Statement<'statement> for SQLite3Statement<'statement> {
     fn bind_i64(&mut self, idx: usize, val: i64) -> Result<(), Self::Error> {
         try_sqlite3!(sqlite3_bind_int64(self.handle, idx as _, val))
             .map(|_| ())
-            .map_err(SQLite3Error::Prepare)
+            .map_err(SQLite3Error::Database)
     }
 
     fn bind_f64(&mut self, idx: usize, val: f64) -> Result<(), Self::Error> {
         try_sqlite3!(sqlite3_bind_double(self.handle, idx as _, val))
             .map(|_| ())
-            .map_err(SQLite3Error::Prepare)
+            .map_err(SQLite3Error::Database)
     }
 
     fn bind_str(&mut self, idx: usize, s: &'statement str) -> Result<(), Self::Error> {
@@ -47,7 +45,7 @@ impl<'statement> Statement<'statement> for SQLite3Statement<'statement> {
             None
         ))
         .map(|_| ())
-        .map_err(SQLite3Error::Prepare)
+        .map_err(SQLite3Error::Database)
     }
 
     fn bind_blob(&mut self, idx: usize, b: &'statement [u8]) -> Result<(), Self::Error> {
@@ -59,12 +57,12 @@ impl<'statement> Statement<'statement> for SQLite3Statement<'statement> {
             None
         ))
         .map(|_| ())
-        .map_err(SQLite3Error::Prepare)
+        .map_err(SQLite3Error::Database)
     }
 
     fn bind_null(&mut self, idx: usize) -> Result<(), Self::Error> {
         try_sqlite3!(sqlite3_bind_null(self.handle, idx as _))
             .map(|_| ())
-            .map_err(SQLite3Error::Prepare)
+            .map_err(SQLite3Error::Database)
     }
 }

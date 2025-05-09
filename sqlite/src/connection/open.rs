@@ -22,7 +22,7 @@ impl SQLite3Connection {
         .map(|_| SQLite3Connection { handle })
         .map_err(|error| {
             try_sqlite3!(sqlite3_close(handle)).unwrap();
-            SQLite3Error::Prepare(error)
+            SQLite3Error::Database(error)
         })?;
 
         connection.execute("PRAGMA foreign_keys = ON;")?;
