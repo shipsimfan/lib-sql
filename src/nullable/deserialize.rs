@@ -6,7 +6,11 @@ impl<'de, T: Deserialize<'de>> Deserialize<'de> for Nullable<T> {
         T::deserialize(deserializer).map(|value| Nullable::NonNull(value))
     }
 
-    fn unwrap<E: DeserializeError<'de>>(val: Option<Self>, _: &'static str) -> Result<Self, E> {
+    fn unwrap<F: FnOnce() -> Self, E: DeserializeError<'de>>(
+        val: Option<Self>,
+        _: &'static str,
+        _: Option<F>,
+    ) -> Result<Self, E> {
         Ok(match val {
             Some(val) => val,
             None => Nullable::Null,
