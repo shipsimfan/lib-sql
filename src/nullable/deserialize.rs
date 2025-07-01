@@ -1,9 +1,11 @@
 use crate::Nullable;
-use data_format::{Deserialize, DeserializeError};
+use data_format::{deserialize::OptionConverter, Deserialize, DeserializeError};
 
 impl<'de, T: Deserialize<'de>> Deserialize<'de> for Nullable<T> {
     fn deserialize<D: data_format::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        T::deserialize(deserializer).map(|value| Nullable::NonNull(value))
+        deserializer
+            .deserialize_option(OptionConverter::default())
+            .map(Into::into)
     }
 
     fn unwrap<F: FnOnce() -> Self, E: DeserializeError<'de>>(
