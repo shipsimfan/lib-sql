@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "data-format"
 version = "0.1.0"
-source = "git+https://github.com/shipsimfan/lib-data-format#62a25b552cae4dc625bdd644a9f61965f43b19f7"
+source = "git+https://github.com/shipsimfan/lib-data-format#a16384d1a117eeaac7523b265b78e14e86f86abb"
 dependencies = [
  "macros",
 ]
@@ -13,7 +13,7 @@ dependencies = [
 [[package]]
 name = "macros"
 version = "0.1.0"
-source = "git+https://github.com/shipsimfan/lib-data-format#62a25b552cae4dc625bdd644a9f61965f43b19f7"
+source = "git+https://github.com/shipsimfan/lib-data-format#a16384d1a117eeaac7523b265b78e14e86f86abb"
 dependencies = [
  "proc-macro-util",
 ]
@@ -21,7 +21,7 @@ dependencies = [
 [[package]]
 name = "proc-macro-util"
 version = "0.1.0"
-source = "git+https://github.com/shipsimfan/lib-proc-macro-util#710454275a7861ee6c67db2bd3335b566bd0df30"
+source = "git+https://github.com/shipsimfan/lib-proc-macro-util#dc8dd4731da64fb9af18c5a7de40e1b8c3686570"
 dependencies = [
  "proc-macro-util-base",
  "proc-macro-util-macros",
@@ -30,12 +30,12 @@ dependencies = [
 [[package]]
 name = "proc-macro-util-base"
 version = "0.1.0"
-source = "git+https://github.com/shipsimfan/lib-proc-macro-util#710454275a7861ee6c67db2bd3335b566bd0df30"
+source = "git+https://github.com/shipsimfan/lib-proc-macro-util#dc8dd4731da64fb9af18c5a7de40e1b8c3686570"
 
 [[package]]
 name = "proc-macro-util-macros"
 version = "0.1.0"
-source = "git+https://github.com/shipsimfan/lib-proc-macro-util#710454275a7861ee6c67db2bd3335b566bd0df30"
+source = "git+https://github.com/shipsimfan/lib-proc-macro-util#dc8dd4731da64fb9af18c5a7de40e1b8c3686570"
 dependencies = [
  "proc-macro-util-base",
 ]
@@ -58,4 +58,4 @@ dependencies = [
 [[package]]
 name = "sqlite3"
 version = "0.1.0"
-source = "git+https://github.com/shipsimfan/lib-sqlite3#4a06745235483384766b7128dad7892c83ee141d"
+source = "git+https://github.com/shipsimfan/lib-sqlite3#687145519cbb34935096242ad4a639289f630a7e"
